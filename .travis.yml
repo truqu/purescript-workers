@@ -1,0 +1,37 @@
+language: node_js
+node_js:
+  - node
+
+addons:
+  browserstack:
+    username: $BROWSERSTACK_USERNAME
+    access_key: $BROWSERSTACK_ACCESSKEY
+
+before_install:
+  - export PATH=./node_modules/.bin:$PATH
+
+install:
+  - npm install
+  - bower install
+
+script:
+  - npm run test:browserstack
+
+after_script:
+  - npm run prepare:release
+
+deploy:
+  - provider: releases
+    api_key: $GITHUB_TOKEN
+    skip_cleanup: true
+    file_glob: true
+    file: releases/github/*
+    on:
+      tags: true
+      branch: master
+
+  - provider: script
+    script: deploy.sh
+    on:
+      tags: true
+      branch: master

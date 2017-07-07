@@ -1,0 +1,42 @@
+{
+  "name": "purescript-workers",
+  "version": "1.0.0",
+  "description": "A wrapper around the Web Workers API",
+  "scripts": {
+    "prepare:release": "mkdir -p releases/github && cp -r README.md LICENSE src bower.json releases/github",
+    "test:build": "mkdir -p dist/karma && pulp browserify -j 4 --main \"Test.Main\" -I test --to dist/karma/index.js",
+    "test:run": "karma start karma.conf.js",
+    "test:run:browserstack": "karma start karma.browserstack.conf.js",
+    "test:browserstack": "npm run test:build && npm run test:run:browserstack",
+    "test": "npm run test:build && npm run test:run",
+    "start": "find . -type f -regex '.*\\(src\\|test\\).*' ! -regex '.*bower_components.*\\|.*node_modules.*|.*\\.sw.*' | entr -s 'npm run test -s'"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "bower": "1.8.0",
+    "eslint": "3.19.0",
+    "eslint-config-airbnb": "15.0.1",
+    "eslint-plugin-import": "2.5.0",
+    "eslint-plugin-jsx-a11y": "5.0.3",
+    "eslint-plugin-react": "7.1.0",
+    "karma": "1.7.0",
+    "karma-browserstack-launcher": "1.3.0",
+    "karma-chrome-launcher": "2.1.1",
+    "karma-firefox-launcher": "1.0.1",
+    "karma-mocha": "1.3.0",
+    "karma-spec-reporter": "0.0.31",
+    "mocha": "3.4.2",
+    "pulp": "11.0.0",
+    "purescript": "0.11.5"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Truqu/purescript-workers.git"
+  },
+  "author": "Matthias Benkort <matthias.benkort@truqu.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Truqu/purescript-workers/issues"
+  },
+  "homepage": "https://github.com/Truqu/purescript-workers#readme"
+}
