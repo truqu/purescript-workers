@@ -3,6 +3,7 @@ module Workers.GlobalScope where
 import Prelude
 
 import Control.Monad.Eff(Eff)
+import Control.Monad.Eff.Exception(Error)
 
 import Workers(WORKER, Location, Navigator)
 

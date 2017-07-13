@@ -1,4 +1,12 @@
-module Workers where
+module Workers
+  ( WORKER
+  , class AbstractWorkerI
+  , SharedWorker
+  , DedicatedWorker
+  , Location (..)
+  , Navigator (..)
+  , onError
+  ) where
 
 import Prelude
 

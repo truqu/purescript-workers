@@ -11,7 +11,6 @@ module ApplicationCache
 import Prelude
 
 import Control.Monad.Eff(kind Effect, Eff)
-import Data.Version(Version)
 
 
 foreign import data APPCACHE :: Effect
@@ -74,4 +73,3 @@ foreign import update
   :: forall e
   .  ApplicationCache
   -> Eff (appcache :: APPCACHE | e) Unit
-
