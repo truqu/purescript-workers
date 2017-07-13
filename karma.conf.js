@@ -4,8 +4,13 @@ module.exports = (config) => {
         singleRun: true,
         browsers: ['Chrome'],
         files: [
-            'dist/karma/worker01.js',
             'dist/karma/index.js',
+            {
+                watched: false,
+                pattern: 'dist/karma/worker*.js',
+                included: false,
+                served: true,
+            },
         ],
         frameworks: [
             'mocha',

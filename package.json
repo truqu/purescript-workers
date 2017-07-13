@@ -8,7 +8,8 @@
     "test:run:browserstack": "karma start karma.browserstack.conf.js",
     "test:run": "karma start karma.conf.js",
 
-    "test:build:wrk01": "pulp browserify -j 4 -O --main \"Test.Workers.Worker01\" -I test --to dist/karma/worker01.js",
+    "test:build:wrk02": "pulp browserify -j 4 -O --main \"Test.Workers.Worker02\" -I test --to dist/karma/worker02.js",
+    "test:build:wrk01": "pulp browserify -j 4 -O --main \"Test.Workers.Worker01\" -I test --to dist/karma/worker01.js   && npm run test:build:wrk02",
     "test:build": "mkdir -p dist/karma && pulp browserify -j 4 -O --main \"Test.Main\" -I test --to dist/karma/index.js && npm run test:build:wrk01",
 
     "test:browserstack": "npm run test:build && npm run test:run:browserstack",
