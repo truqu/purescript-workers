@@ -1,16 +1,12 @@
-exports.name = function name() {
-    return function eff() {
-        return name;
-    };
+exports.name = function eff() {
+    return name;
 };
 
-exports.applicationCache = function applicationCache() {
-    return function eff() {
-        return applicationCache;
-    };
+exports.applicationCache = function eff() {
+    return applicationCache;
 };
 
-exports.onConnect = function onConnect(f) {
+exports.onConnect = function _onConnect(f) {
     return function eff() {
         onconnect = function onconnect() {
             f();

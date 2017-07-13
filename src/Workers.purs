@@ -12,9 +12,9 @@ module Workers
 
 import Prelude
 
-import Control.Monad.Eff(kind Effect, Eff)
-import Control.Monad.Eff.Exception(Error)
-import Data.Version(Version)
+import Control.Monad.Eff           (kind Effect, Eff)
+import Control.Monad.Eff.Exception (Error)
+import Data.Version                (Version)
 
 
 foreign import data WORKER :: Effect
@@ -50,7 +50,7 @@ type Navigator =
   , vendorSub   :: String
   , language    :: String
   , languages   :: Array String
-  , onLine      :: Boolean
+  , online      :: Boolean
   }
 
 
@@ -155,14 +155,14 @@ instance showCredentials :: Show Credentials where
 
 
 foreign import _newSharedWorker
-  :: forall e worker
+  :: forall e
   .  String
   -> { name :: String, requestCredentials :: String, workerType :: String }
   -> Eff (worker :: WORKER | e) SharedWorker
 
 
 foreign import _newDedicatedWorker
-  :: forall e worker
+  :: forall e
   .  String
   -> { name :: String, requestCredentials :: String, workerType :: String }
   -> Eff (worker :: WORKER | e) DedicatedWorker

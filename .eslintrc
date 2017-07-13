@@ -9,6 +9,10 @@
     "globals": {
         "Worker": true,
         "SharedWorker": true,
+        "close": true,
+        "location": true,
+        "name": true,
+        "navigator": true,
         "onconnect": true,
         "onerror": true,
         "onlanguagechange": true,
@@ -17,7 +21,8 @@
         "onoffline": true,
         "ononline": true,
         "onrejectionhandled": true,
-        "onrejectionunhandled": true
+        "onrejectionunhandled": true,
+        "postMessage": true
     },
     "rules": {
         "import/no-extraneous-dependencies": 0,

@@ -1,30 +1,50 @@
-exports.location = function location() {
-    return function eff() {
-        return location;
+exports.location = function eff() {
+    // NOTE A Plain JS Object is created because the WorkerLocation object
+    // can't be serialized and may lead to weird behavior.
+    return {
+        origin: location.origin,
+        protocol: location.protocol,
+        host: location.host,
+        hostname: location.hostname,
+        port: location.port,
+        pathname: location.pathname,
+        search: location.search,
+        hash: location.hash,
     };
 };
 
-exports.navigator = function navigator() {
-    return function eff() {
-        return navigator;
+exports.navigator = function eff() {
+    // NOTE A Plain JS Object is created because the WorkerNavigator object
+    // can't be serialized and may lead to weird behavior.
+    return {
+        appCodeName: navigator.appCodeName,
+        appName: navigator.appName,
+        appVersion: navigator.appVersion, // TODO
+        platform: navigator.platform,
+        product: navigator.product,
+        productSub: navigator.productSub,
+        userAgent: navigator.userAgent,
+        vendor: navigator.vendor,
+        vendorSub: navigator.vendorSub,
+        language: navigator.language,
+        languages: Array.prototype.slice.apply(navigator.languages),
+        online: navigator.online,
     };
 };
 
-exports.close = function close() {
-    return function eff() {
-        close();
-    };
+exports.close = function eff() {
+    close();
 };
 
-exports.onError = function onError(f) {
+exports.onError = function _onError(f) {
     return function eff() {
         onerror = function onerror(e) {
-            f(e.target.error);
+            f(e.target.error)();
         };
     };
 };
 
-exports.onLanguageChange = function onLanguageChange(f) {
+exports.onLanguageChange = function _onLanguageChange(f) {
     return function eff() {
         onlanguagechange = function onlanguagechange() {
             f();
@@ -32,7 +52,7 @@ exports.onLanguageChange = function onLanguageChange(f) {
     };
 };
 
-exports.onOffline = function onOffline(f) {
+exports.onOffline = function _onOffline(f) {
     return function eff() {
         onoffline = function onoffline() {
             f();
@@ -40,7 +60,7 @@ exports.onOffline = function onOffline(f) {
     };
 };
 
-exports.onOnline = function onOnline(f) {
+exports.onOnline = function _onOnline(f) {
     return function eff() {
         ononline = function ononline() {
             f();
@@ -48,7 +68,7 @@ exports.onOnline = function onOnline(f) {
     };
 };
 
-exports.onRejectionHandled = function onRejectionHandled(f) {
+exports.onRejectionHandled = function _onRejectionHandled(f) {
     return function eff() {
         onrejectionhandled = function onrejectionhandled() {
             f();
@@ -56,7 +76,7 @@ exports.onRejectionHandled = function onRejectionHandled(f) {
     };
 };
 
-exports.onUnhandledRejection = function onUnhandledRejection(f) {
+exports.onUnhandledRejection = function _onUnhandledRejection(f) {
     return function eff() {
         onrejectionunhandled = function onrejectionunhandled() {
             f();
