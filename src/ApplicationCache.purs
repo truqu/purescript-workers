@@ -10,7 +10,7 @@ module ApplicationCache
 
 import Prelude
 
-import Control.Monad.Eff(kind Effect)
+import Control.Monad.Eff(kind Effect, Eff)
 import Data.Version(Version)
 
 
@@ -29,7 +29,17 @@ data Status
   | Obsolete
 
 
-abort
+type StatusRec =
+  { uncached    :: Status
+  , idle        :: Status
+  , checking    :: Status
+  , downloading :: Status
+  , updateReady :: Status
+  , obsolete    :: Status
+  }
+
+
+foreign import abort
   :: forall e
   .  ApplicationCache
   -> Eff (appcache :: APPCACHE | e) Unit
@@ -48,29 +58,20 @@ status =
           }
 
 
-swapCache
-  :: forall e
-  .  ApplicationCache
-  -> Eff (appcache :: APPCACHE | e) Unit
-
-
-update
-  :: forall e
-  .  ApplicationCache
-  -> Eff (appcache :: APPCACHE | e) Unit
-
-
-type StatusRec =
-  { uncached    :: Status
-  , idle        :: Status
-  , checking    :: Status
-  , downloading :: Status
-  , updateReady :: Status
-  , obsolete    :: Status
-  }
-
-
 foreign import _status
   :: StatusRec
   -> ApplicationCache
   -> Status
+
+
+foreign import swapCache
+  :: forall e
+  .  ApplicationCache
+  -> Eff (appcache :: APPCACHE | e) Unit
+
+
+foreign import update
+  :: forall e
+  .  ApplicationCache
+  -> Eff (appcache :: APPCACHE | e) Unit
+

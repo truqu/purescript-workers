@@ -40,13 +40,13 @@ foreign import postMessage'
 
 -- | Event handler for the `message` event
 foreign import onMessage
-  :: forall e e' msg.
-  => (msg -> Eff ( | e') Unit)
+  :: forall e e' msg
+  .  (msg -> Eff ( | e') Unit)
   -> Eff (worker :: WORKER | e) Unit
 
 
 -- | Event handler for the `messageError` event
 foreign import onMessageError
-  :: forall e e'.
-  => (Error -> Eff ( | e') Unit)
+  :: forall e e'
+  .  (Error -> Eff ( | e') Unit)
   -> Eff (worker :: WORKER | e) Unit

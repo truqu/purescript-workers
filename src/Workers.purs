@@ -3,6 +3,7 @@ module Workers where
 import Prelude
 
 import Control.Monad.Eff(kind Effect, Eff)
+import Control.Monad.Eff.Exception(Error)
 import Data.Version(Version)
 
 
@@ -46,21 +47,22 @@ type Navigator =
 class AbstractWorkerI worker where
   -- | Event handler for the `error` event.
   onError
-    :: forall e e'.
-    => (Error -> Eff ( | e') Unit)
+    :: forall e e'
+    .  worker
+    -> (Error -> Eff ( | e') Unit)
     -> Eff (worker :: WORKER | e) Unit
 
 
-instance AbstractWorkerDedicated :: AbstractWorkerI DedicatedWorker where
+instance abstractWorkerDedicated :: AbstractWorkerI DedicatedWorker where
   onError = _onError
 
 
-instance AbstractWorkerShared:: AbstractWorkerI SharedWorker where
+instance abstractWorkerShared:: AbstractWorkerI SharedWorker where
   onError = _onError
 
 
 foreign import _onError
-  :: forall e e' worker.
-  => worker
+  :: forall e e' worker
+  .  worker
   -> (Error -> Eff ( | e') Unit)
   -> Eff (worker :: WORKER | e) Unit

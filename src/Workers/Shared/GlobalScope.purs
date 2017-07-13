@@ -26,7 +26,7 @@ foreign import name
   -- | The applicationCache attribute returns the ApplicationCache object for the worker.
 foreign import applicationCache
   :: forall e
-  -> Eff (worker :: WORKER | e) ApplicationCache
+  .  Eff (worker :: WORKER | e) ApplicationCache
 
 
   -- | Event handler for the `connect` event

@@ -23,31 +23,36 @@ foreign import close
 
 
 foreign import onError
-  :: forall e e'.
-  => (Error -> Eff ( | e') Unit)
+  :: forall e e'
+  .  (Error -> Eff ( | e') Unit)
   -> Eff (worker :: WORKER | e) Unit
 
 
 foreign import onLanguageChange
-  :: forall e e'.
+  :: forall e e'
+  .  Eff ( | e') Unit
   -> Eff (worker :: WORKER | e) Unit
 
 
 foreign import onOffline
-  :: forall e e'.
+  :: forall e e'
+  .  Eff ( | e') Unit
   -> Eff (worker :: WORKER | e) Unit
 
 
 foreign import onOnline
-  :: forall e e'.
+  :: forall e e'
+  .  Eff ( | e') Unit
   -> Eff (worker :: WORKER | e) Unit
 
 
 foreign import onRejectionHandled
-  :: forall e e'.
+  :: forall e e'
+  .  Eff ( | e') Unit
   -> Eff (worker :: WORKER | e) Unit
 
 
 foreign import onUnhandledRejection
-  :: forall e e'.
+  :: forall e e'
+  .  Eff ( | e') Unit
   -> Eff (worker :: WORKER | e) Unit
