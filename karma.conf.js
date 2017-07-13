@@ -1,25 +1,26 @@
-module.exports = config => {
+module.exports = (config) => {
     config.set({
         autoWatch: true,
         singleRun: true,
-        browsers: ["Chrome"],
+        browsers: ['Chrome'],
         files: [
-            "dist/karma/index.js",
+            'dist/karma/worker01.js',
+            'dist/karma/index.js',
         ],
         frameworks: [
-            "mocha",
+            'mocha',
         ],
         plugins: [
-            "karma-chrome-launcher",
-            "karma-firefox-launcher",
-            "karma-spec-reporter",
-            "karma-mocha",
+            'karma-chrome-launcher',
+            'karma-firefox-launcher',
+            'karma-spec-reporter',
+            'karma-mocha',
         ],
-        reporters: ["spec"],
+        reporters: ['spec'],
         client: {
             mocha: {
-                timeout: 10000
-            }
-        }
+                timeout: 10000,
+            },
+        },
     });
 };

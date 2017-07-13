@@ -4,9 +4,13 @@
   "description": "A wrapper around the Web Workers API",
   "scripts": {
     "prepare:release": "mkdir -p releases/github && cp -r README.md LICENSE src bower.json releases/github",
-    "test:build": "mkdir -p dist/karma && pulp browserify -j 4 --main \"Test.Main\" -I test --to dist/karma/index.js",
-    "test:run": "karma start karma.conf.js",
+
     "test:run:browserstack": "karma start karma.browserstack.conf.js",
+    "test:run": "karma start karma.conf.js",
+
+    "test:build:wrk01": "pulp browserify -j 4 -O --main \"Test.Workers.Worker01\" -I test --to dist/karma/worker01.js",
+    "test:build": "mkdir -p dist/karma && pulp browserify -j 4 -O --main \"Test.Main\" -I test --to dist/karma/index.js && npm run test:build:wrk01",
+
     "test:browserstack": "npm run test:build && npm run test:run:browserstack",
     "test": "npm run test:build && npm run test:run",
     "start": "find . -type f -regex '.*\\(src\\|test\\).*' ! -regex '.*bower_components.*\\|.*node_modules.*|.*\\.sw.*' | entr -s 'npm run test -s'"
