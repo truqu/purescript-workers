@@ -7,3 +7,19 @@ exports._onError = function _onError(wrk) {
         };
     };
 };
+
+exports._newSharedWorker = function _newSharedWorker(src) {
+    return function _new2(opts) {
+        return function eff() {
+            return new SharedWorker(src, opts);
+        };
+    };
+};
+
+exports._newDedicatedWorker = function _newDedicatedWorker(src) {
+    return function _new2(opts) {
+        return function eff() {
+            return new Worker(src, opts);
+        };
+    };
+};

@@ -7,9 +7,17 @@
         "ecmaVersion": 5
     },
     "globals": {
-        "indexedDB": true,
-        "IDBKeyRange": true,
-        "PS": true
+        "Worker": true,
+        "SharedWorker": true,
+        "onconnect": true,
+        "onerror": true,
+        "onlanguagechange": true,
+        "onmessage": true,
+        "onmessageerror": true,
+        "onoffline": true,
+        "ononline": true,
+        "onrejectionhandled": true,
+        "onrejectionunhandled": true
     },
     "rules": {
         "import/no-extraneous-dependencies": 0,

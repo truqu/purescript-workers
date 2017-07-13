@@ -1,6 +1,7 @@
 module Workers.Dedicated.GlobalScope
   ( name
   , postMessage
+  , postMessage'
   , onMessage
   , onMessageError
   , module Workers.GlobalScope
@@ -9,8 +10,9 @@ module Workers.Dedicated.GlobalScope
 import Prelude
 
 import Control.Monad.Eff(Eff)
+import Control.Monad.Eff.Exception(Error)
 
-import Workers(WORKER, Location, Navigator)
+import Workers(WORKER)
 import Workers.GlobalScope
 
 
@@ -22,16 +24,27 @@ foreign import name
 
 
 -- | Clones message and transmits it to the Worker object.
-foreign import postMessage
+postMessage
   :: forall e msg
   .  msg
   -> Eff (worker :: WORKER | e) Unit
+postMessage msg =
+  _postMessage msg []
 
 
 -- | Clones message and transmits it to the Worker object associated with
 -- | dedicatedWorkerGlobal.transfer can be passed as a list of objects that are to be
 -- | transferred rather than cloned.
-foreign import postMessage'
+postMessage'
+  :: forall e msg transfer
+  .  msg
+  -> Array transfer
+  -> Eff (worker :: WORKER | e) Unit
+postMessage' =
+  _postMessage
+
+
+foreign import _postMessage
   :: forall e msg transfer
   .  msg
   -> Array transfer

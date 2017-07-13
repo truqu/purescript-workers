@@ -1,17 +1,17 @@
 module Workers.Shared.GlobalScope
-  ( class SharedWorkerI
-  , name
+  ( name
   , applicationCache
   , onConnect
   , module Workers.GlobalScope
+  , module ApplicationCache
   ) where
 
 import Prelude
 
 import Control.Monad.Eff(Eff)
 
-import ApplicationCache(ApplicationCache)
-import Workers(WORKER, SharedWorker, Location, Navigator)
+import ApplicationCache
+import Workers(WORKER)
 import Workers.GlobalScope
 
 
@@ -32,6 +32,5 @@ foreign import applicationCache
   -- | Event handler for the `connect` event
 foreign import onConnect
   :: forall e e'
-  .  SharedWorker
-  -> Eff ( | e') Unit
+  .  Eff ( | e') Unit
   -> Eff (worker :: WORKER | e) Unit
