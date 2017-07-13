@@ -4,13 +4,12 @@ module Workers.Dedicated
   , module Workers.MessagePort
   ) where
 
-import Prelude
+import Prelude             (Unit)
 
-import Control.Monad.Eff(Eff)
-import Control.Monad.Eff.Exception(Error)
+import Control.Monad.Eff   (Eff)
 
-import Workers hiding (SharedWorker)
-import Workers.MessagePort hiding (close, start)
+import Workers             (class AbstractWorkerI, Credentials(..), DedicatedWorker, Location, Navigator, WORKER, WorkerOptions, WorkerType(..), new, new', onError)
+import Workers.MessagePort (class MessagePortI, MessagePort, onMessage, onMessageError, postMessage, postMessage')
 
 
 class (AbstractWorkerI worker, MessagePortI worker) <= DedicatedWorkerI worker where
@@ -22,7 +21,7 @@ class (AbstractWorkerI worker, MessagePortI worker) <= DedicatedWorkerI worker w
 
 
 instance dedicatedWorker :: DedicatedWorkerI DedicatedWorker where
-  terminate  = _terminate
+  terminate = _terminate
 
 
 foreign import _terminate

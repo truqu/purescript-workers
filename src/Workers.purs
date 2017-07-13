@@ -3,9 +3,9 @@ module Workers
   , class AbstractWorkerI, onError, new, new'
   , SharedWorker
   , DedicatedWorker
-  , Location (..)
-  , Navigator (..)
-  , WorkerOptions (..)
+  , Location
+  , Navigator
+  , WorkerOptions
   , WorkerType (..)
   , Credentials (..)
   ) where
