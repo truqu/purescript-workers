@@ -15,7 +15,7 @@ import Test.Spec.Assertions        (shouldEqual, fail)
 import Test.Spec.Mocha             (MOCHA, runMocha)
 
 import Aff.Workers.Dedicated
-
+import Aff.Workers.Shared
 
 it' :: forall e. String -> Eff ( | e) Unit -> Spec e Unit
 it' str body =
@@ -59,3 +59,12 @@ main = runMocha do
       postMessage worker unit
       (caught :: Boolean) <- takeVar var
       caught `shouldEqual` true
+
+    it "Shared Workers Connect" do
+      var <- makeVar
+      (worker :: SharedWorker) <- new "base/dist/karma/worker04.js"
+      onMessage (port worker) (\msg -> launchAff' do
+        putVar var msg
+      )
+      (wait :: Boolean) <- takeVar var
+      wait `shouldEqual` true
