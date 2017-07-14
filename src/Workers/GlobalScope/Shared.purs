@@ -8,11 +8,13 @@ module Workers.GlobalScope.Shared
 
 import Prelude
 
-import Control.Monad.Eff(Eff)
+import Control.Monad.Eff   (Eff)
+import Data.NonEmpty       (NonEmpty(..))
 
 import ApplicationCache
-import Workers(WORKER)
+import Workers             (WORKER)
 import Workers.GlobalScope
+import Workers.MessagePort (MessagePort)
 
 
   -- | Returns sharedWorkerGlobal’s name, i.e. the value given to the SharedWorker constructor.
@@ -23,14 +25,23 @@ foreign import name
   .  Eff (worker :: WORKER | e) String
 
 
-  -- | The applicationCache attribute returns the ApplicationCache object for the worker.
+-- | The applicationCache attribute returns the ApplicationCache object for the worker.
 foreign import applicationCache
   :: forall e
   .  Eff (worker :: WORKER | e) ApplicationCache
 
 
-  -- | Event handler for the `connect` event
-foreign import onConnect
+-- | Event handler for the `connect` event
+onConnect
+    :: forall e e'
+    .  (NonEmpty Array MessagePort -> Eff ( | e') Unit)
+    -> Eff (worker :: WORKER | e) Unit
+onConnect =
+    _onConnect NonEmpty
+
+
+foreign import _onConnect
   :: forall e e'
-  .  Eff ( | e') Unit
+  .  (MessagePort -> Array MessagePort -> NonEmpty Array MessagePort)
+  -> (NonEmpty Array MessagePort -> Eff ( | e') Unit)
   -> Eff (worker :: WORKER | e) Unit
