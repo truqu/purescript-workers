@@ -49,3 +49,13 @@ main = runMocha do
       postMessage worker unit
       (loc :: Location) <- takeVar var
       loc.pathname `shouldEqual` "/base/dist/karma/worker02.js"
+
+    it "Data Clone Error" do
+      var <- makeVar
+      (worker :: DedicatedWorker) <- new "base/dist/karma/worker03.js"
+      onMessage worker (\msg -> launchAff' do
+        putVar var msg
+      )
+      postMessage worker unit
+      (caught :: Boolean) <- takeVar var
+      caught `shouldEqual` true

@@ -10,7 +10,7 @@ module Workers.GlobalScope.Dedicated
 import Prelude
 
 import Control.Monad.Eff(Eff)
-import Control.Monad.Eff.Exception(Error)
+import Control.Monad.Eff.Exception(EXCEPTION, Error)
 
 import Workers(WORKER)
 import Workers.GlobalScope
@@ -27,7 +27,7 @@ foreign import name
 postMessage
   :: forall e msg
   .  msg
-  -> Eff (worker :: WORKER | e) Unit
+  -> Eff (worker :: WORKER, exception :: EXCEPTION | e) Unit
 postMessage msg =
   _postMessage msg []
 
@@ -39,7 +39,7 @@ postMessage'
   :: forall e msg transfer
   .  msg
   -> Array transfer
-  -> Eff (worker :: WORKER | e) Unit
+  -> Eff (worker :: WORKER, exception :: EXCEPTION | e) Unit
 postMessage' =
   _postMessage
 
@@ -48,14 +48,14 @@ foreign import _postMessage
   :: forall e msg transfer
   .  msg
   -> Array transfer
-  -> Eff (worker :: WORKER | e) Unit
+  -> Eff (worker :: WORKER, exception :: EXCEPTION | e) Unit
 
 
 -- | Event handler for the `message` event
 foreign import onMessage
   :: forall e e' msg
   .  (msg -> Eff ( | e') Unit)
-  -> Eff (worker :: WORKER | e) Unit
+  -> Eff (worker :: WORKER, exception :: EXCEPTION | e) Unit
 
 
 -- | Event handler for the `messageError` event
