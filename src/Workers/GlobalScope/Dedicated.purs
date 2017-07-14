@@ -1,4 +1,4 @@
-module Workers.Dedicated.GlobalScope
+module Workers.GlobalScope.Dedicated
   ( name
   , postMessage
   , postMessage'

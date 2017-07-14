@@ -1,4 +1,4 @@
-module Workers.Shared.GlobalScope
+module Workers.GlobalScope.Shared
   ( name
   , applicationCache
   , onConnect

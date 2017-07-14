@@ -4,6 +4,6 @@ import Prelude
 
 import Control.Monad.Eff(Eff)
 import Control.Monad.Eff.Console(CONSOLE, log)
-import Workers.Dedicated.GlobalScope(postMessage, onMessage, location)
+import Workers.GlobalScope.Dedicated(postMessage, onMessage, location)
 
 main = onMessage (\_ -> location `bind` postMessage)
