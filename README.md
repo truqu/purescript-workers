@@ -9,7 +9,9 @@ This package offers bindings of top the [Web Workers APIs](https://w3c.github.io
 
 #### v1.0.0
 
-- Work In Progress
+- Supports for the Dedicated Workers 
+- Supports for the Shared Workers
+- Supports for the Application Cache
 
 ## Documentation
 

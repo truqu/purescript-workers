@@ -43,7 +43,7 @@
     "type": "git",
     "url": "git+https://github.com/Truqu/purescript-workers.git"
   },
-  "author": "Matthias Benkort <matthias.benkort@truqu.com>",
+  "author": "Truqu <matthias.benkort@truqu.com>",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/Truqu/purescript-workers/issues"

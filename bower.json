@@ -1,19 +1,32 @@
 {
   "name": "purescript-workers",
+  "description": "An API wrapper around Web Workers",
+  "license": "MIT",
+  "homepage": "https://github.com/truqu/purescript-workers",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/truqu/purescript-workers.git"
+  },
   "ignore": [
     "**/.*",
     "node_modules",
     "bower_components",
-    "output"
+    "output",
+    "test",
+    "dist",
+    "release",
+    "package.json",
+    "karma.conf.js",
+    "karma.browserstack.conf.js",
+    "deploy.sh"
   ],
   "dependencies": {
-    "purescript-prelude": "^3.1.0",
-    "purescript-console": "^3.0.0",
+    "purescript-aff": "^3.1.0",
+    "purescript-eff": "^3.1.0",
     "purescript-exceptions": "https://github.com/truqu/purescript-exceptions.git#3.1.0",
     "purescript-generics": "^4.0.0",
-    "purescript-eff": "^3.1.0",
-    "purescript-aff": "^3.1.0",
-    "purescript-nonempty": "^4.0.0"
+    "purescript-nonempty": "^4.0.0",
+    "purescript-prelude": "^3.1.0"
   },
   "devDependencies": {
     "purescript-spec": "^1.0.0",
