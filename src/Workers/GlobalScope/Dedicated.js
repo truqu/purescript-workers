@@ -7,7 +7,11 @@ exports.name = function _name() {
 exports._postMessage = function _postMessage(msg) {
     return function postMessage2(transfer) {
         return function eff() {
-            postMessage(msg, transfer.length > 0 ? transfer : undefined);
+            try {
+                postMessage(msg, transfer.length > 0 ? transfer : undefined);
+            } catch (e) {
+                throw new Error(e.name || 'Error');
+            }
         };
     };
 };
@@ -24,7 +28,7 @@ exports.onMessage = function _onMessage(f) {
 exports.onMessageError = function _onMessageError(f) {
     return function eff() {
         onmessageerror = function onMessageError(e) {
-            f(e.target.error);
+            f(new Error(e.target.error.name)); // FIXME
         };
     };
 };

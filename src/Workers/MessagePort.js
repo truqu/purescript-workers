@@ -14,7 +14,11 @@ exports._postMessage = function postMessage(port) {
     return function postMessage2(msg) {
         return function postMessage3(transfer) {
             return function eff() {
-                port.postMessage(msg, transfer.length > 0 ? transfer : undefined);
+                try {
+                    port.postMessage(msg, transfer.length > 0 ? transfer : undefined);
+                } catch (e) {
+                    throw new Error(e.name || 'Error');
+                }
             };
         };
     };
@@ -35,7 +39,7 @@ exports._onMessageError = function _onMessageError(port) {
     return function onMessageError2(f) {
         return function eff() {
             port.onmessageerror = function onMessageError(e) {
-                f(e.target.error)();
+                f(e.target.error)(); // FIXME
             };
         };
     };

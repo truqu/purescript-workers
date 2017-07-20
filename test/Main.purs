@@ -50,15 +50,15 @@ main = runMocha do
       (loc :: Location) <- takeVar var
       loc.pathname `shouldEqual` "/base/dist/karma/worker02.js"
 
-    it "Data Clone Error" do
-      var <- makeVar
-      (worker :: DedicatedWorker) <- new "base/dist/karma/worker03.js"
-      onMessage worker (\msg -> launchAff' do
-        putVar var msg
-      )
-      postMessage worker unit
-      (msg :: Boolean) <- takeVar var
-      msg `shouldEqual` true
+    -- it "Data Clone Error" do
+    --   var <- makeVar
+    --   (worker :: DedicatedWorker) <- new "base/dist/karma/worker03.js"
+    --   onMessage worker (\msg -> launchAff' do
+    --     putVar var msg
+    --   )
+    --   postMessage worker unit
+    --   (msg :: Boolean) <- takeVar var
+    --   msg `shouldEqual` true
 
     it "Shared Workers Connect" do
       var <- makeVar
@@ -80,9 +80,18 @@ main = runMocha do
 
     it "Error Event - Bubble to Parent" do
       var <- makeVar
-      (worker :: DedicatedWorker) <- new "base/dist/karma/worker05.js"
+      (worker :: DedicatedWorker) <- new "base/dist/karma/worker06.js"
       onError worker (\err -> launchAff' do
         putVar var err
       )
       (err :: Error) <- takeVar var
-      (message err) `shouldEqual` "Uncaught Error: patate"
+      (message err) `shouldEqual` "Error"
+
+    it "Data Clone Error" do
+      var <- makeVar
+      (worker :: DedicatedWorker) <- new "base/dist/karma/worker07.js"
+      onMessage worker (\msg -> launchAff' do
+        putVar var msg
+      )
+      msg <- takeVar var
+      msg `shouldEqual` "DataCloneError"

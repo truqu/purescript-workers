@@ -4,9 +4,9 @@ import Prelude
 
 import Control.Monad.Eff             (Eff)
 import Control.Monad.Eff.Exception   (throwException, error, message)
-import Control.Monad.Eff.Console(log)
 
 import Workers.GlobalScope.Dedicated (onError, postMessage)
+
 
 -- | Exception handling via onError
 main = do

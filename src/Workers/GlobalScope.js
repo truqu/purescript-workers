@@ -40,6 +40,7 @@ exports.onError = function _onError(f) {
     return function eff() {
         onerror = function onerror(msg) {
             f(new Error(msg))();
+            return true; // NOTE indicates that the error has been handled, so it isn't propagated to the parent
         };
     };
 };
