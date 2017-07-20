@@ -5,17 +5,33 @@ import Prelude
 import Control.Monad.Eff(Eff)
 import Control.Monad.Eff.Exception(Error)
 
-import Workers(WORKER, Location, Navigator)
+import Workers(WORKER, Location(..), Navigator(..))
 
 
-foreign import location
+location
   :: forall e
   .  Eff (worker :: WORKER | e) Location
+location =
+  _location Location
 
 
-foreign import navigator
+foreign import _location
+  :: forall a e
+  .  (a -> Location)
+  -> Eff (worker :: WORKER | e) Location
+
+
+navigator
   :: forall e
   .  Eff (worker :: WORKER | e) Navigator
+navigator =
+  _navigator Navigator
+
+
+foreign import _navigator
+  :: forall a e
+  .  (a -> Navigator)
+  -> Eff (worker :: WORKER | e) Navigator
 
 
 foreign import close

@@ -5,7 +5,7 @@ import Control.Monad.Aff           (Aff, launchAff)
 import Control.Monad.Aff.Console   (log)
 import Control.Monad.Aff.AVar      (makeVar, takeVar, putVar)
 import Control.Monad.Eff           (Eff)
-import Control.Monad.Eff.Exception (EXCEPTION, Error, message, stack)
+import Control.Monad.Eff.Exception (EXCEPTION, Error, name, stack)
 import Control.Monad.Eff.Class     (liftEff)
 import Data.Either                 (Either(..))
 import Data.Enum                   (toEnum)
@@ -14,6 +14,7 @@ import Test.Spec                   (Spec, describe, describeOnly, it, itOnly)
 import Test.Spec.Assertions        (shouldEqual, fail)
 import Test.Spec.Mocha             (MOCHA, runMocha)
 
+import Aff.Workers(Location(..), Navigator(..))
 import Aff.Workers.Dedicated
 import Aff.Workers.Shared
 
@@ -47,18 +48,18 @@ main = runMocha do
         putVar var msg
       )
       postMessage worker unit
-      (loc :: Location) <- takeVar var
+      Location loc <- takeVar var
       loc.pathname `shouldEqual` "/base/dist/karma/worker02.js"
 
-    -- it "Data Clone Error" do
-    --   var <- makeVar
-    --   (worker :: DedicatedWorker) <- new "base/dist/karma/worker03.js"
-    --   onMessage worker (\msg -> launchAff' do
-    --     putVar var msg
-    --   )
-    --   postMessage worker unit
-    --   (msg :: Boolean) <- takeVar var
-    --   msg `shouldEqual` true
+    it "WorkerNavigator object" do
+      var <- makeVar
+      (worker :: DedicatedWorker) <- new "base/dist/karma/worker03.js"
+      onMessage worker (\msg -> launchAff' do
+        putVar var msg
+      )
+      postMessage worker unit
+      Navigator nav <- takeVar var
+      nav.onLine `shouldEqual` true
 
     it "Shared Workers Connect" do
       var <- makeVar
@@ -76,7 +77,7 @@ main = runMocha do
         putVar var msg
       )
       msg <- takeVar var
-      msg `shouldEqual` "Uncaught Error: patate"
+      msg `shouldEqual` "Error"
 
     it "Error Event - Bubble to Parent" do
       var <- makeVar
@@ -85,7 +86,7 @@ main = runMocha do
         putVar var err
       )
       (err :: Error) <- takeVar var
-      (message err) `shouldEqual` "Error"
+      (name err) `shouldEqual` "Error"
 
     it "Data Clone Error" do
       var <- makeVar

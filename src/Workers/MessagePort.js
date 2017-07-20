@@ -14,11 +14,7 @@ exports._postMessage = function postMessage(port) {
     return function postMessage2(msg) {
         return function postMessage3(transfer) {
             return function eff() {
-                try {
-                    port.postMessage(msg, transfer.length > 0 ? transfer : undefined);
-                } catch (e) {
-                    throw new Error(e.name || 'Error');
-                }
+                port.postMessage(msg, transfer.length > 0 ? transfer : undefined);
             };
         };
     };

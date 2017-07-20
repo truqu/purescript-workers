@@ -6,5 +6,5 @@ import Control.Monad.Eff(Eff)
 import Control.Monad.Eff.Console(CONSOLE, log)
 import Workers.GlobalScope.Dedicated(postMessage, onMessage, location)
 
--- | Worker accessing the location its global scope
+-- | Worker accessing the location in its global scope
 main = onMessage (\_ -> location `bind` postMessage)

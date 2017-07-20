@@ -7,11 +7,7 @@ exports.name = function _name() {
 exports._postMessage = function _postMessage(msg) {
     return function postMessage2(transfer) {
         return function eff() {
-            try {
-                postMessage(msg, transfer.length > 0 ? transfer : undefined);
-            } catch (e) {
-                throw new Error(e.name || 'Error');
-            }
+            postMessage(msg, transfer.length > 0 ? transfer : undefined);
         };
     };
 };

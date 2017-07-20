@@ -1,34 +1,38 @@
-exports.location = function eff() {
-    // NOTE A Plain JS Object is created because the WorkerLocation object
-    // can't be serialized and may lead to weird behavior.
-    return {
-        origin: location.origin,
-        protocol: location.protocol,
-        host: location.host,
-        hostname: location.hostname,
-        port: location.port,
-        pathname: location.pathname,
-        search: location.search,
-        hash: location.hash,
+exports._location = function _location(toLocation) {
+    return function eff() {
+        // NOTE A Plain JS Object is created because the WorkerLocation object
+        // can't be serialized and may lead to weird behavior.
+        return toLocation({
+            origin: location.origin || '',
+            protocol: location.protocol || '',
+            host: location.host || '',
+            hostname: location.hostname || '',
+            port: location.port || '',
+            pathname: location.pathname || '',
+            search: location.search || '',
+            hash: location.hash || '',
+        });
     };
 };
 
-exports.navigator = function eff() {
-    // NOTE A Plain JS Object is created because the WorkerNavigator object
-    // can't be serialized and may lead to weird behavior.
-    return {
-        appCodeName: navigator.appCodeName,
-        appName: navigator.appName,
-        appVersion: navigator.appVersion, // TODO
-        platform: navigator.platform,
-        product: navigator.product,
-        productSub: navigator.productSub,
-        userAgent: navigator.userAgent,
-        vendor: navigator.vendor,
-        vendorSub: navigator.vendorSub,
-        language: navigator.language,
-        languages: Array.prototype.slice.apply(navigator.languages),
-        online: navigator.online,
+exports._navigator = function _navigator(toNavigator) {
+    return function eff() {
+        // NOTE A Plain JS Object is created because the WorkerNavigator object
+        // can't be serialized and may lead to weird behavior.
+        return toNavigator({
+            appCodeName: navigator.appCodeName || '',
+            appName: navigator.appName || '',
+            appVersion: navigator.appVersion || '',
+            platform: navigator.platform || '',
+            product: navigator.product || '',
+            productSub: navigator.productSub || '',
+            userAgent: navigator.userAgent || '',
+            vendor: navigator.vendor || '',
+            vendorSub: navigator.vendorSub || '',
+            language: navigator.language || '',
+            languages: Array.prototype.slice.apply(navigator.languages || []),
+            onLine: navigator.onLine || false,
+        });
     };
 };
 
@@ -40,7 +44,9 @@ exports.onError = function _onError(f) {
     return function eff() {
         onerror = function onerror(msg) {
             f(new Error(msg))();
-            return true; // NOTE indicates that the error has been handled, so it isn't propagated to the parent
+            // NOTE indicates that the error has been handled,
+            // so it isn't propagated to the parent
+            return true;
         };
     };
 };

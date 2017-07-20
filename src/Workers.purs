@@ -3,8 +3,8 @@ module Workers
   , class AbstractWorkerI, onError, new, new'
   , SharedWorker
   , DedicatedWorker
-  , Location
-  , Navigator
+  , Location(..)
+  , Navigator(..)
   , WorkerOptions
   , WorkerType (..)
   , Credentials (..)
@@ -14,7 +14,7 @@ import Prelude
 
 import Control.Monad.Eff           (kind Effect, Eff)
 import Control.Monad.Eff.Exception (Error)
-import Data.Version                (Version)
+import Data.Generic                (class Generic, gShow)
 
 
 foreign import data WORKER :: Effect
@@ -26,7 +26,7 @@ foreign import data SharedWorker :: Type
 foreign import data DedicatedWorker :: Type
 
 
-type Location =
+newtype Location = Location
   { origin   :: String
   , protocol :: String
   , host     :: String
@@ -38,10 +38,17 @@ type Location =
   }
 
 
-type Navigator =
+derive instance genericLocation :: Generic Location
+
+
+instance showLocation :: Show Location where
+  show = gShow
+
+
+newtype Navigator = Navigator
   { appCodeName :: String
   , appName     :: String
-  , appVersion  :: Version
+  , appVersion  :: String
   , platform    :: String
   , product     :: String
   , productSub  :: String
@@ -50,8 +57,15 @@ type Navigator =
   , vendorSub   :: String
   , language    :: String
   , languages   :: Array String
-  , online      :: Boolean
+  , onLine      :: Boolean
   }
+
+
+derive instance genericNavigator :: Generic Navigator
+
+
+instance showNavigator :: Show Navigator where
+  show = gShow
 
 
 type WorkerOptions =
