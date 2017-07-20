@@ -1,4 +1,14 @@
-module Workers.GlobalScope where
+module Workers.GlobalScope
+  ( location
+  , navigator
+  , close
+  , onError
+  , onLanguageChange
+  , onOffline
+  , onOnline
+  , onRejectionHandled
+  , onUnhandledRejection
+  ) where
 
 import Prelude
 
