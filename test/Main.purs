@@ -3,16 +3,15 @@ module Test.Main where
 import Prelude -- (Unit, bind, discard, pure, unit, (<*))
 import Control.Monad.Aff           (Aff, launchAff)
 import Control.Monad.Aff.AVar      (AVAR, makeVar, takeVar, putVar)
-import Control.Monad.Aff.Console   (log)
 import Control.Monad.Eff           (Eff)
 import Control.Monad.Eff.Class     (liftEff)
 import Control.Monad.Eff.Exception (EXCEPTION, Error, name)
-import Test.Spec                   (Spec, describe, it, describeOnly, itOnly)
+import Test.Spec                   (Spec, describe, it)
 import Test.Spec.Assertions        (shouldEqual)
 import Test.Spec.Mocha             (MOCHA, runMocha)
 
 import Aff.Workers                 (WORKER, Location(..), Navigator(..), new, onError)
-import Aff.Workers.Dedicated       (DedicatedWorker)
+import Aff.Workers.Dedicated       (DedicatedWorker, terminate)
 import Aff.Workers.MessagePort     (onMessage, postMessage)
 import Aff.Workers.Shared          (SharedWorker, port)
 
@@ -94,3 +93,14 @@ main = runMocha do
       )
       msg <- takeVar var
       msg `shouldEqual` "DataCloneError"
+
+    it "Worker Terminate" do
+      var <- makeVar
+      (worker :: DedicatedWorker) <- new "base/dist/karma/worker01.js"
+      onMessage worker (\msg -> launchAff' do
+        terminate worker
+        putVar var unit
+      )
+      postMessage worker "hello"
+      msg <- takeVar var
+      msg `shouldEqual` unit
