@@ -1,6 +1,6 @@
-module Aff.Workers.MessagePort
+module Aff.MessagePort
   ( class MessagePortAff, postMessage, postMessage', onMessage, onMessageError
-  , module Workers.MessagePort
+  , module MessagePort
   ) where
 
 import Prelude                     (Unit, (<<<))
@@ -11,8 +11,8 @@ import Control.Monad.Eff.Class     (liftEff)
 import Control.Monad.Eff.Exception (EXCEPTION, Error)
 
 import Aff.Workers                 (WORKER, DedicatedWorker)
-import Workers.MessagePort          as MP
-import Workers.MessagePort hiding  (class MessagePortI, postMessage, postMessage', onMessage, onMessageError)
+import MessagePort                  as MP
+import MessagePort                  hiding  (class MessagePortI, postMessage, postMessage', onMessage, onMessageError)
 
 
 class MessagePortAff port where

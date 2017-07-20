@@ -1,4 +1,4 @@
-module Workers.GlobalScope
+module GlobalScope
   ( location
   , navigator
   , close

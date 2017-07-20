@@ -1,13 +1,12 @@
 module Aff.Workers.Shared
   ( class SharedWorkerAff, port
   , module Aff.Workers
-  , module Aff.Workers.MessagePort
+  , module Aff.MessagePort
   ) where
 
-
-import Aff.Workers                  hiding (DedicatedWorker)
-import Aff.Workers.MessagePort      hiding (close, start)
-import Workers.Shared               as W
+import Aff.MessagePort (class MessagePortAff, MessagePort, onMessage, onMessageError, postMessage, postMessage')
+import Aff.Workers     (class AbstractWorkerAff, Credentials(..), Location(..), Navigator(..), SharedWorker, WORKER, WorkerOptions, WorkerType(..), new, new', onError)
+import Workers.Shared   as W
 
 
 class (AbstractWorkerAff worker) <= SharedWorkerAff worker where

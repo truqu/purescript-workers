@@ -1,4 +1,4 @@
-module Workers.MessagePort
+module MessagePort
   ( class MessagePortI, postMessage, postMessage', onMessage, onMessageError
   , MessagePort
   , close

@@ -1,6 +1,6 @@
 module Test.Main where
 
-import Prelude -- (Unit, bind, discard, pure, unit, (<*))
+import Prelude                     (Unit, bind, discard, pure, unit, (<*))
 import Control.Monad.Aff           (Aff, launchAff)
 import Control.Monad.Aff.AVar      (AVAR, makeVar, takeVar, putVar)
 import Control.Monad.Eff           (Eff)
@@ -10,9 +10,9 @@ import Test.Spec                   (Spec, describe, it)
 import Test.Spec.Assertions        (shouldEqual)
 import Test.Spec.Mocha             (MOCHA, runMocha)
 
+import Aff.MessagePort             (onMessage, postMessage)
 import Aff.Workers                 (WORKER, Location(..), Navigator(..), new, onError)
 import Aff.Workers.Dedicated       (DedicatedWorker, terminate)
-import Aff.Workers.MessagePort     (onMessage, postMessage)
 import Aff.Workers.Shared          (SharedWorker, port)
 
 it' :: forall e. String -> Eff ( | e) Unit -> Spec e Unit

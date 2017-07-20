@@ -2,11 +2,11 @@ module Test.Workers.Worker03 where
 
 import Prelude
 
-import Control.Monad.Eff             (Eff)
-import Control.Monad.Eff.Exception   (EXCEPTION)
+import Control.Monad.Eff           (Eff)
+import Control.Monad.Eff.Exception (EXCEPTION)
 
-import Workers                       (WORKER)
-import Workers.GlobalScope.Dedicated (onMessage, postMessage, navigator)
+import Workers                     (WORKER)
+import GlobalScope.Dedicated       (onMessage, postMessage, navigator)
 
 
 -- | Worker accessing the navigator in its global scope

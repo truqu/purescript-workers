@@ -1,19 +1,20 @@
-module Workers.GlobalScope.Dedicated
+module GlobalScope.Dedicated
   ( name
   , postMessage
   , postMessage'
   , onMessage
   , onMessageError
-  , module Workers.GlobalScope
+  , module GlobalScope
   ) where
 
-import Prelude
+import Prelude                     (Unit)
 
-import Control.Monad.Eff(Eff)
-import Control.Monad.Eff.Exception(EXCEPTION, Error)
+import Control.Monad.Eff           (Eff)
+import Control.Monad.Eff.Exception (EXCEPTION, Error)
 
-import Workers(WORKER)
-import Workers.GlobalScope
+import Workers                     (WORKER)
+import GlobalScope                 (close, location, navigator, onError, onLanguageChange
+                                   ,onOffline, onOnline, onRejectionHandled, onUnhandledRejection)
 
 
 -- | Returns dedicatedWorkerGlobal’s name, i.e. the value given to the Worker constructor.

@@ -1,20 +1,20 @@
-module Workers.GlobalScope.Shared
+module GlobalScope.Shared
   ( name
   , applicationCache
   , onConnect
-  , module Workers.GlobalScope
+  , module GlobalScope
   , module ApplicationCache
   ) where
 
-import Prelude
+import Prelude           (Unit)
 
-import Control.Monad.Eff   (Eff)
-import Data.NonEmpty       (NonEmpty(..))
+import Control.Monad.Eff (Eff)
+import Data.NonEmpty     (NonEmpty(..))
 
-import ApplicationCache
-import Workers             (WORKER)
-import Workers.GlobalScope
-import Workers.MessagePort (MessagePort)
+import ApplicationCache  (APPCACHE, ApplicationCache, Status(..), abort, status, swapCache, update)
+import GlobalScope       (close, location, navigator, onError, onLanguageChange, onOffline, onOnline, onRejectionHandled, onUnhandledRejection)
+import MessagePort       (MessagePort)
+import Workers           (WORKER)
 
 
   -- | Returns sharedWorkerGlobal’s name, i.e. the value given to the SharedWorker constructor.

@@ -1,16 +1,11 @@
 module Workers.Shared
   ( class SharedWorkerI, port
   , module Workers
-  , module Workers.MessagePort
+  , module MessagePort
   ) where
 
-import Prelude
-
-import Control.Monad.Eff(Eff)
-import Control.Monad.Eff.Exception(Error)
-
-import Workers hiding (DedicatedWorker)
-import Workers.MessagePort
+import MessagePort (class MessagePortI, MessagePort, close, onMessage, onMessageError, postMessage, postMessage', start)
+import Workers     (class AbstractWorkerI, Credentials(..), SharedWorker, Location, Navigator, WORKER, WorkerOptions, WorkerType(..), new, new', onError)
 
 
 class (AbstractWorkerI worker) <= SharedWorkerI worker where

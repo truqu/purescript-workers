@@ -2,11 +2,11 @@ module Test.Workers.Worker05 where
 
 import Prelude
 
-import Control.Monad.Eff             (Eff)
-import Control.Monad.Eff.Exception   (EXCEPTION, throwException, error, name)
+import Control.Monad.Eff           (Eff)
+import Control.Monad.Eff.Exception (EXCEPTION, throwException, error, name)
 
-import Workers                       (WORKER)
-import Workers.GlobalScope.Dedicated (onError, postMessage)
+import Workers                     (WORKER)
+import GlobalScope.Dedicated       (onError, postMessage)
 
 
 -- | Exception handling via onError
