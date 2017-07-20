@@ -1,22 +1,20 @@
 module Test.Main where
 
-import Prelude
+import Prelude -- (Unit, bind, discard, pure, unit, (<*))
 import Control.Monad.Aff           (Aff, launchAff)
+import Control.Monad.Aff.AVar      (AVAR, makeVar, takeVar, putVar)
 import Control.Monad.Aff.Console   (log)
-import Control.Monad.Aff.AVar      (makeVar, takeVar, putVar)
 import Control.Monad.Eff           (Eff)
-import Control.Monad.Eff.Exception (EXCEPTION, Error, name, stack)
 import Control.Monad.Eff.Class     (liftEff)
-import Data.Either                 (Either(..))
-import Data.Enum                   (toEnum)
-import Data.Maybe                  (Maybe(..), isNothing, maybe)
-import Test.Spec                   (Spec, describe, describeOnly, it, itOnly)
-import Test.Spec.Assertions        (shouldEqual, fail)
+import Control.Monad.Eff.Exception (EXCEPTION, Error, name)
+import Test.Spec                   (Spec, describe, it, describeOnly, itOnly)
+import Test.Spec.Assertions        (shouldEqual)
 import Test.Spec.Mocha             (MOCHA, runMocha)
 
-import Aff.Workers(Location(..), Navigator(..))
-import Aff.Workers.Dedicated
-import Aff.Workers.Shared
+import Aff.Workers                 (WORKER, Location(..), Navigator(..), new, onError)
+import Aff.Workers.Dedicated       (DedicatedWorker)
+import Aff.Workers.MessagePort     (onMessage, postMessage)
+import Aff.Workers.Shared          (SharedWorker, port)
 
 it' :: forall e. String -> Eff ( | e) Unit -> Spec e Unit
 it' str body =
@@ -28,7 +26,7 @@ launchAff' aff =
   pure unit <* (launchAff aff)
 
 
---main :: forall e. Eff (console :: CONSOLE | e) Unit
+main :: forall e. Eff (mocha :: MOCHA, avar :: AVAR, worker :: WORKER, exception :: EXCEPTION | e) Unit
 main = runMocha do
   describe "[Dedicated Worker] Basic" do
     it "Hello World" do

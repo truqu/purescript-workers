@@ -8,9 +8,16 @@
   ],
   "dependencies": {
     "purescript-prelude": "^3.1.0",
-    "purescript-console": "^3.0.0"
+    "purescript-console": "^3.0.0",
+    "purescript-exceptions": "https://github.com/truqu/purescript-exceptions.git#3.1.0",
+    "purescript-generics": "^4.0.0",
+    "purescript-eff": "^3.1.0",
+    "purescript-aff": "^3.1.0",
+    "purescript-nonempty": "^4.0.0"
   },
   "devDependencies": {
-    "purescript-psci-support": "^3.0.0"
+    "purescript-spec": "^1.0.0",
+    "purescript-psci-support": "^3.0.0",
+    "purescript-spec-mocha": "https://github.com/truqu/purescript-spec-mocha.git#0.5.0"
   }
 }
