@@ -1,5 +1,5 @@
 module MessagePort
-  ( class MessagePortI, postMessage, postMessage', onMessage, onMessageError
+  ( class MessagePortEff, postMessage, postMessage', onMessage, onMessageError
   , MessagePort
   , close
   , start
@@ -16,7 +16,7 @@ import Workers(WORKER, DedicatedWorker)
 foreign import data MessagePort :: Type
 
 
-class MessagePortI port where
+class MessagePortEff port where
   -- | Clones message and transmits it to the Worker object.
   postMessage
     :: forall e msg
@@ -49,14 +49,14 @@ class MessagePortI port where
     -> Eff (worker :: WORKER | e) Unit
 
 
-instance messagePortMessagePort :: MessagePortI MessagePort where
+instance messagePortMessagePort :: MessagePortEff MessagePort where
   postMessage p msg = _postMessage p msg []
   postMessage'      = _postMessage
   onMessage         = _onMessage
   onMessageError    = _onMessageError
 
 
-instance messagePortDedicatedWorker :: MessagePortI DedicatedWorker where
+instance messagePortDedicatedWorker :: MessagePortEff DedicatedWorker where
   postMessage p msg = _postMessage p msg []
   postMessage'      = _postMessage
   onMessage         = _onMessage

@@ -12,7 +12,7 @@ import Control.Monad.Eff.Exception (EXCEPTION, Error)
 
 import Aff.Workers                 (WORKER, DedicatedWorker)
 import MessagePort                  as MP
-import MessagePort                  hiding  (class MessagePortI, postMessage, postMessage', onMessage, onMessageError)
+import MessagePort                  hiding  (class MessagePortEff, postMessage, postMessage', onMessage, onMessageError)
 
 
 class MessagePortAff port where

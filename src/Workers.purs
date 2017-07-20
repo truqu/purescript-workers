@@ -1,6 +1,6 @@
 module Workers
   ( WORKER
-  , class AbstractWorkerI, onError, new, new'
+  , class AbstractWorkerEff, onError, new, new'
   , SharedWorker
   , DedicatedWorker
   , Location(..)
@@ -86,7 +86,7 @@ data Credentials
   | Include
 
 
-class AbstractWorkerI worker where
+class AbstractWorkerEff worker where
   -- | Event handler for the `error` event.
   onError
     :: forall e e'
@@ -121,7 +121,7 @@ foreign import _onError
   -> Eff (worker :: WORKER | e) Unit
 
 
-instance abstractWorkerDedicated :: AbstractWorkerI DedicatedWorker where
+instance abstractWorkerDedicated :: AbstractWorkerEff DedicatedWorker where
   onError = _onError
   new url =
     _newDedicatedWorker url
@@ -137,7 +137,7 @@ instance abstractWorkerDedicated :: AbstractWorkerI DedicatedWorker where
       }
 
 
-instance abstractWorkerShared:: AbstractWorkerI SharedWorker where
+instance abstractWorkerShared:: AbstractWorkerEff SharedWorker where
   onError = _onError
   new url =
     _newSharedWorker url

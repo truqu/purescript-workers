@@ -1,14 +1,14 @@
 module Workers.Shared
-  ( class SharedWorkerI, port
+  ( class SharedWorkerEff, port
   , module Workers
   , module MessagePort
   ) where
 
-import MessagePort (class MessagePortI, MessagePort, close, onMessage, onMessageError, postMessage, postMessage', start)
-import Workers     (class AbstractWorkerI, Credentials(..), SharedWorker, Location, Navigator, WORKER, WorkerOptions, WorkerType(..), new, new', onError)
+import MessagePort (class MessagePortEff, MessagePort, close, onMessage, onMessageError, postMessage, postMessage', start)
+import Workers     (class AbstractWorkerEff, Credentials(..), SharedWorker, Location, Navigator, WORKER, WorkerOptions, WorkerType(..), new, new', onError)
 
 
-class (AbstractWorkerI worker) <= SharedWorkerI worker where
+class (AbstractWorkerEff worker) <= SharedWorkerEff worker where
   -- | Returns sharedWorker’s MessagePort object which can be used
   -- | to communicate with the global environment.
   port
@@ -16,7 +16,7 @@ class (AbstractWorkerI worker) <= SharedWorkerI worker where
     -> MessagePort
 
 
-instance sharedWorker :: SharedWorkerI SharedWorker where
+instance sharedWorker :: SharedWorkerEff SharedWorker where
   port = _port
 
 
