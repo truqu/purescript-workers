@@ -38,8 +38,8 @@ exports.close = function eff() {
 
 exports.onError = function _onError(f) {
     return function eff() {
-        onerror = function onerror(e) {
-            f(e.target.error)();
+        onerror = function onerror(msg) {
+            f(new Error(msg))();
         };
     };
 };

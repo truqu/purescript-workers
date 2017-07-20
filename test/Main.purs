@@ -5,12 +5,12 @@ import Control.Monad.Aff           (Aff, launchAff)
 import Control.Monad.Aff.Console   (log)
 import Control.Monad.Aff.AVar      (makeVar, takeVar, putVar)
 import Control.Monad.Eff           (Eff)
-import Control.Monad.Eff.Exception (EXCEPTION, message)
+import Control.Monad.Eff.Exception (EXCEPTION, Error, message, stack)
 import Control.Monad.Eff.Class     (liftEff)
 import Data.Either                 (Either(..))
 import Data.Enum                   (toEnum)
 import Data.Maybe                  (Maybe(..), isNothing, maybe)
-import Test.Spec                   (Spec, describe, describeOnly, it)
+import Test.Spec                   (Spec, describe, describeOnly, it, itOnly)
 import Test.Spec.Assertions        (shouldEqual, fail)
 import Test.Spec.Mocha             (MOCHA, runMocha)
 
@@ -57,8 +57,8 @@ main = runMocha do
         putVar var msg
       )
       postMessage worker unit
-      (caught :: Boolean) <- takeVar var
-      caught `shouldEqual` true
+      (msg :: Boolean) <- takeVar var
+      msg `shouldEqual` true
 
     it "Shared Workers Connect" do
       var <- makeVar
@@ -66,5 +66,23 @@ main = runMocha do
       onMessage (port worker) (\msg -> launchAff' do
         putVar var msg
       )
-      (wait :: Boolean) <- takeVar var
-      wait `shouldEqual` true
+      (msg :: Boolean) <- takeVar var
+      msg `shouldEqual` true
+
+    it "Error Event - Handled by Worker" do
+      var <- makeVar
+      (worker :: DedicatedWorker) <- new "base/dist/karma/worker05.js"
+      onMessage worker (\msg -> launchAff' do
+        putVar var msg
+      )
+      msg <- takeVar var
+      msg `shouldEqual` "Uncaught Error: patate"
+
+    it "Error Event - Bubble to Parent" do
+      var <- makeVar
+      (worker :: DedicatedWorker) <- new "base/dist/karma/worker05.js"
+      onError worker (\err -> launchAff' do
+        putVar var err
+      )
+      (err :: Error) <- takeVar var
+      (message err) `shouldEqual` "Uncaught Error: patate"
