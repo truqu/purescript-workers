@@ -124,3 +124,14 @@ main = runMocha do
       MessagePort.postMessage worker "hello"
       msg <- takeVar var
       msg `shouldEqual` "world"
+
+    it "Service Worker with onMessage()" do
+      var <- makeVar
+      registration <- ServiceWorker.register "base/worker08.js"
+      worker <- ServiceWorker.wait
+      ServiceWorker.onMessage worker (\msg -> launchAff' do
+        putVar var msg
+      )
+      MessagePort.postMessage worker "hello"
+      msg <- takeVar var
+      msg `shouldEqual` "world"
