@@ -1,9 +1,5 @@
 module Workers
   ( WORKER
-  , Shared
-  , Dedicated
-  , Service
-  , MessagePort
   , Location(..)
   , Navigator(..)
   , WorkerType(..)
@@ -27,18 +23,6 @@ import Workers.Class               (class AbstractWorker, class MessagePort)
 
 
 foreign import data WORKER :: Effect
-
-
-foreign import data Shared :: Type
-
-
-foreign import data Dedicated :: Type
-
-
-foreign import data Service :: Type
-
-
-foreign import data MessagePort :: Type
 
 
 newtype Location = Location
@@ -108,23 +92,6 @@ onError =
 --------------------
 -- INSTANCES
 --------------------
-
-instance abstractWorkerDedicated :: AbstractWorker Dedicated
-
-
-instance abstractWorkerShared :: AbstractWorker Shared
-
-
-instance abstractWorkerService :: AbstractWorker Service
-
-
-instance messagePortMessagePort :: MessagePort MessagePort
-
-
-instance messagePortService :: MessagePort Service
-
-
-instance messagePortDedicated :: MessagePort Dedicated
 
 
 derive instance genericLocation :: Generic Location

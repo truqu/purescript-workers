@@ -1,8 +1,35 @@
 module Workers.Service
-  ( RegistrationOptions
+  -- * Types
+  ( Service
+  , Registration
+  , RegistrationOptions
   , State(..)
-  , module Workers
+
+  -- * Constructors & Setup
+  , controller
+  , getRegistration
+  , onControllerChange
+  , ready
+  , register
+  , startMessages
+
+  -- * Service Worker Manipulations
+  , onStateChange
+  , scriptURL
+  , state
+
+  -- * Registration Manipulations
+  , active
+  , installing
+  , waiting
+  , scope
+  , update
+  , unregister
+  , onUpdateFound
+
+  -- * Re-exports
   , module MessagePort
+  , module Workers
   ) where
 
 import Prelude
@@ -13,13 +40,18 @@ import Data.Maybe        (Maybe(..))
 import Data.Nullable     (Nullable, toMaybe, toNullable)
 import Data.String.Read  (class Read, read)
 
-import MessagePort       (postMessage, postMessage')
-import Workers           (WORKER, Service, WorkerType(..), onError)
+import MessagePort       (postMessage, postMessage', onMessage)
+import Workers           (WORKER, WorkerType(..), onError)
+import Workers.Class     (class AbstractWorker, class MessagePort)
 
 
 --------------------
 -- TYPES
 --------------------
+
+
+foreign import data Service :: Type
+
 
 foreign import data Registration :: Type
 
@@ -175,6 +207,16 @@ onUpdateFound =
 --------------------
 -- INSTANCES
 --------------------
+
+
+instance abstractWorkerService :: AbstractWorker Service where
+  abstractWorkerConstructor _ =
+    "Service"
+
+
+instance messagePortService :: MessagePort Service where
+  messagePortConstructor _ =
+    "Service"
 
 
 instance showState :: Show State where

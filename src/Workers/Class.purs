@@ -1,11 +1,18 @@
 module Workers.Class
-  ( class AbstractWorker
-  , class MessagePort
+  ( class AbstractWorker, abstractWorkerConstructor
+  , class MessagePort, messagePortConstructor
   ) where
 
 
 -- | An opaque class to perform high-level operations on workers
-class AbstractWorker worker
+class AbstractWorker worker where
+  abstractWorkerConstructor
+    :: worker
+    -> String
+
 
 -- | An opaque class to perform high-level operations on ports
-class MessagePort port
+class MessagePort port where
+  messagePortConstructor
+    :: port
+    -> String

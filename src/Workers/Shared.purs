@@ -1,7 +1,13 @@
 module Workers.Shared
-  ( new
-  , new'
+  -- * Types
+  ( Shared
   , port
+
+  -- * Constructors
+  , new
+  , new'
+
+  -- * Re-Exports
   , module Workers
   , module MessagePort
   ) where
@@ -10,8 +16,17 @@ import Prelude           (show)
 
 import Control.Monad.Eff (Eff)
 
-import MessagePort       (close, start, onMessage, onMessageError, postMessage, postMessage')
-import Workers           (WORKER, Shared, MessagePort, Credentials(..), Location, Navigator, Options, WorkerType(..), onError)
+import MessagePort       (MessagePort, close, start, onMessage, onMessageError, postMessage, postMessage')
+import Workers           (WORKER, Credentials(..), Location, Navigator, Options, WorkerType(..), onError)
+import Workers.Class     (class AbstractWorker)
+
+
+--------------------
+-- TYPES
+--------------------
+
+
+foreign import data Shared :: Type
 
 
 --------------------
@@ -59,6 +74,16 @@ port
   -> MessagePort
 port =
   _port
+
+
+--------------------
+-- INSTANCES
+--------------------
+
+
+instance abstractWorkerShared :: AbstractWorker Shared where
+  abstractWorkerConstructor _ =
+    "Shared"
 
 
 --------------------

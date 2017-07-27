@@ -1,6 +1,9 @@
 module MessagePort
+  -- * Types
+  ( MessagePort
+
   -- * Interaction with MessagePort-like types
-  ( postMessage
+  , postMessage
   , postMessage'
   , onMessage
   , onMessageError
@@ -15,8 +18,16 @@ import Prelude
 import Control.Monad.Eff           (Eff)
 import Control.Monad.Eff.Exception (EXCEPTION, Error)
 
-import Workers                     (WORKER, MessagePort)
+import Workers                     (WORKER)
 import Workers.Class               (class MessagePort)
+
+
+--------------------
+-- TYPES
+--------------------
+
+
+foreign import data MessagePort :: Type
 
 
 --------------------
@@ -82,6 +93,16 @@ start
   -> Eff (worker :: WORKER | e) Unit
 start =
   _start
+
+
+--------------------
+-- INSTANCES
+--------------------
+
+
+instance messagePortMessagePort :: MessagePort MessagePort where
+  messagePortConstructor _ =
+    "MessagePort"
 
 
 --------------------

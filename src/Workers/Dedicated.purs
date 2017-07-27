@@ -1,7 +1,13 @@
 module Workers.Dedicated
-  ( new
-  , new'
+  -- * Types
+  ( Dedicated
   , terminate
+
+  -- * Constructors
+  , new
+  , new'
+
+  -- * Re-exports
   , module Workers
   , module MessagePort
   ) where
@@ -10,8 +16,17 @@ import Prelude           (Unit, show)
 
 import Control.Monad.Eff (Eff)
 
-import Workers           (WORKER, Dedicated, Credentials(..), Location, Navigator, Options, WorkerType(..), onError)
+import Workers           (WORKER, Credentials(..), Location, Navigator, Options, WorkerType(..), onError)
 import MessagePort       (onMessage, onMessageError, postMessage, postMessage')
+import Workers.Class     (class AbstractWorker, class MessagePort)
+
+
+--------------------
+-- TYPES
+--------------------
+
+
+foreign import data Dedicated :: Type
 
 
 --------------------
@@ -59,6 +74,21 @@ terminate
   -> Eff (worker :: WORKER | e) Unit
 terminate =
   _terminate
+
+
+--------------------
+-- INSTANCES
+--------------------
+
+
+instance abstractWorkerDedicated :: AbstractWorker Dedicated where
+  abstractWorkerConstructor _ =
+    "Dedicated"
+
+
+instance messagePortDedicated :: MessagePort Dedicated where
+  messagePortConstructor _ =
+    "Dedicated"
 
 
 --------------------

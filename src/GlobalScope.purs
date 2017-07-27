@@ -12,10 +12,10 @@ module GlobalScope
 
 import Prelude
 
-import Control.Monad.Eff(Eff)
-import Control.Monad.Eff.Exception(Error)
+import Control.Monad.Eff           (Eff)
+import Control.Monad.Eff.Exception (Error)
 
-import Workers(WORKER, Location(..), Navigator(..))
+import Workers                     (WORKER, Location(..), Navigator(..))
 
 
 location
