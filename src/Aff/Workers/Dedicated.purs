@@ -2,21 +2,23 @@ module Aff.Workers.Dedicated
   ( new
   , new'
   , terminate
+  , onMessage
+  , onMessageError
   , module Workers.Dedicated
-  , module Aff.MessagePort
   , module Aff.Workers
   ) where
 
 
-import Prelude                 (Unit, (<<<))
+import Prelude                     (Unit, (<<<))
 
-import Control.Monad.Aff       (Aff)
-import Control.Monad.Eff.Class (liftEff)
+import Control.Monad.Aff           (Aff)
+import Control.Monad.Eff           (Eff)
+import Control.Monad.Eff.Exception (Error)
+import Control.Monad.Eff.Class     (liftEff)
 
-import Aff.MessagePort         (onMessage, onMessageError, postMessage, postMessage')
-import Aff.Workers             (WORKER, Credentials(..), Location, Navigator, Options, WorkerType(..), onError)
-import Workers.Dedicated       (Dedicated)
-import Workers.Dedicated        as W
+import Aff.Workers                 (WORKER, Credentials(..), Location, Navigator, Options, WorkerType(..), onError, postMessage, postMessage')
+import Workers.Dedicated           (Dedicated)
+import Workers.Dedicated            as W
 
 
 
@@ -52,3 +54,23 @@ terminate
   -> Aff (worker :: WORKER | e) Unit
 terminate =
   liftEff <<< W.terminate
+
+
+-- | Event handler for the `message` event
+onMessage
+  :: forall e e' msg
+  .  Dedicated
+  -> (msg -> Eff ( | e') Unit)
+  -> Aff (worker :: WORKER | e) Unit
+onMessage p =
+  liftEff <<< W.onMessage p
+
+
+-- | Event handler for the `messageError` event
+onMessageError
+  :: forall e e'
+  .  Dedicated
+  -> (Error -> Eff ( | e') Unit)
+  -> Aff (worker :: WORKER | e) Unit
+onMessageError p =
+  liftEff <<< W.onMessageError p

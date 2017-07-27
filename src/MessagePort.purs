@@ -3,8 +3,6 @@ module MessagePort
   ( MessagePort
 
   -- * Interaction with MessagePort-like types
-  , postMessage
-  , postMessage'
   , onMessage
   , onMessageError
 
@@ -19,7 +17,7 @@ import Control.Monad.Eff           (Eff)
 import Control.Monad.Eff.Exception (EXCEPTION, Error)
 
 import Workers                     (WORKER)
-import Workers.Class               (class MessagePort, messagePortConstructor)
+import Workers.Class               (class Channel)
 
 
 --------------------
@@ -34,47 +32,24 @@ foreign import data MessagePort :: Type
 -- METHODS
 --------------------
 
--- | Clones message and transmits it to the Worker object.
-postMessage
-  :: forall e msg port. (MessagePort port)
-  => port
-  -> msg
-  -> Eff (worker :: WORKER, exception :: EXCEPTION | e) Unit
-postMessage p msg =
-  _postMessage p msg []
-
-
--- | Clones message and transmits it to the port object associated with
--- | dedicatedportGlobal.transfer can be passed as a list of objects that are to be
--- | transferred rather than cloned.
-postMessage'
-  :: forall e msg transfer port. (MessagePort port)
-  => port
-  -> msg
-  -> Array transfer
-  -> Eff (worker :: WORKER, exception :: EXCEPTION | e) Unit
-postMessage' =
-  _postMessage
-
-
 -- | Event handler for the `message` event
 onMessage
-  :: forall e e' msg port. (MessagePort port)
-  => port
+  :: forall e e' msg
+  .  MessagePort
   -> (msg -> Eff ( | e') Unit)
   -> Eff (worker :: WORKER | e) Unit
 onMessage port =
-  _onMessage (messagePortConstructor port) port
+  _onMessage port
 
 
 -- | Event handler for the `messageError` event
 onMessageError
-  :: forall e e' port. (MessagePort port)
-  => port
+  :: forall e e'
+  .  MessagePort
   -> (Error -> Eff ( | e') Unit)
   -> Eff (worker :: WORKER | e) Unit
 onMessageError port =
-  _onMessageError (messagePortConstructor port) port
+  _onMessageError port
 
 
 -- | TODO DOC
@@ -100,9 +75,7 @@ start =
 --------------------
 
 
-instance messagePortMessagePort :: MessagePort MessagePort where
-  messagePortConstructor _ =
-    "MessagePort"
+instance channelMessagePort :: Channel MessagePort
 
 
 --------------------
@@ -110,26 +83,16 @@ instance messagePortMessagePort :: MessagePort MessagePort where
 --------------------
 
 
-foreign import _postMessage
-  :: forall e msg transfer port
-  .  port
-  ->  msg
-  -> Array transfer
-  -> Eff (worker :: WORKER, exception :: EXCEPTION | e) Unit
-
-
 foreign import _onMessage
-  :: forall e e' msg port
-  .  String
-  -> port
+  :: forall e e' msg
+  .  MessagePort
   -> (msg -> Eff ( | e') Unit)
   -> Eff (worker :: WORKER | e) Unit
 
 
 foreign import _onMessageError
-  :: forall e e' port
-  .  String
-  -> port
+  :: forall e e'
+  .  MessagePort
   -> (Error -> Eff ( | e') Unit)
   -> Eff (worker :: WORKER | e) Unit
 

@@ -15,7 +15,7 @@ import Data.Maybe                  (Maybe(..))
 import Test.Spec(itOnly)
 import Control.Monad.Aff.Console(log)
 
-import Aff.Workers                 (WORKER, Location(..), Navigator(..), WorkerType(..), onError)
+import Aff.Workers                 (WORKER, Location(..), Navigator(..), WorkerType(..))
 import Aff.Workers.Dedicated       (Dedicated)
 import Aff.Workers.Shared          (Shared)
 
@@ -40,30 +40,30 @@ main = runMocha do
     it "Hello World" do
       var <- makeVar
       (worker :: Dedicated) <- DedicatedWorker.new "base/worker01.js"
-      MessagePort.onMessage worker (\msg -> launchAff' do
+      DedicatedWorker.onMessage worker (\msg -> launchAff' do
         putVar var msg
       )
-      MessagePort.postMessage worker "hello"
+      DedicatedWorker.postMessage worker "hello"
       msg <- takeVar var
       msg `shouldEqual` "world"
 
     it "WorkerLocation object" do
       var <- makeVar
       (worker :: Dedicated) <- DedicatedWorker.new "base/worker02.js"
-      MessagePort.onMessage worker (\msg -> launchAff' do
+      DedicatedWorker.onMessage worker (\msg -> launchAff' do
         putVar var msg
       )
-      MessagePort.postMessage worker unit
+      DedicatedWorker.postMessage worker unit
       Location loc <- takeVar var
       loc.pathname `shouldEqual` "/base/worker02.js"
 
     it "WorkerNavigator object" do
       var <- makeVar
       (worker :: Dedicated) <- DedicatedWorker.new "base/worker03.js"
-      MessagePort.onMessage worker (\msg -> launchAff' do
+      DedicatedWorker.onMessage worker (\msg -> launchAff' do
         putVar var msg
       )
-      MessagePort.postMessage worker unit
+      DedicatedWorker.postMessage worker unit
       Navigator nav <- takeVar var
       nav.onLine `shouldEqual` true
 
@@ -79,7 +79,7 @@ main = runMocha do
     it "Error Event - Handled by Worker" do
       var <- makeVar
       (worker :: Dedicated) <- DedicatedWorker.new "base/worker05.js"
-      MessagePort.onMessage worker (\msg -> launchAff' do
+      DedicatedWorker.onMessage worker (\msg -> launchAff' do
         putVar var msg
       )
       msg <- takeVar var
@@ -88,7 +88,7 @@ main = runMocha do
     it "Error Event - Bubble to Parent" do
       var <- makeVar
       (worker :: Dedicated) <- DedicatedWorker.new "base/worker06.js"
-      onError worker (\err -> launchAff' do
+      DedicatedWorker.onError worker (\err -> launchAff' do
         putVar var err
       )
       (err :: Error) <- takeVar var
@@ -97,7 +97,7 @@ main = runMocha do
     it "Data Clone Error" do
       var <- makeVar
       (worker :: Dedicated) <- DedicatedWorker.new "base/worker07.js"
-      MessagePort.onMessage worker (\msg -> launchAff' do
+      DedicatedWorker.onMessage worker (\msg -> launchAff' do
         putVar var msg
       )
       msg <- takeVar var
@@ -106,32 +106,21 @@ main = runMocha do
     it "Worker terminate" do
       var <- makeVar
       (worker :: Dedicated) <- DedicatedWorker.new "base/worker01.js"
-      MessagePort.onMessage worker (\msg -> launchAff' do
+      DedicatedWorker.onMessage worker (\msg -> launchAff' do
         DedicatedWorker.terminate worker
         putVar var unit
       )
-      MessagePort.postMessage worker "hello"
+      DedicatedWorker.postMessage worker "hello"
       msg <- takeVar var
       msg `shouldEqual` unit
 
     it "Service Worker" do
       var <- makeVar
       registration <- ServiceWorker.register "base/worker08.js"
-      ServiceWorker.onMessage' (\msg -> launchAff' do
+      ServiceWorker.onMessage (\msg -> launchAff' do
         putVar var msg
       )
       worker <- ServiceWorker.wait
-      MessagePort.postMessage worker "hello"
-      msg <- takeVar var
-      msg `shouldEqual` "world"
-
-    it "Service Worker with onMessage()" do
-      var <- makeVar
-      registration <- ServiceWorker.register "base/worker08.js"
-      worker <- ServiceWorker.wait
-      ServiceWorker.onMessage worker (\msg -> launchAff' do
-        putVar var msg
-      )
-      MessagePort.postMessage worker "hello"
+      ServiceWorker.postMessage worker "hello"
       msg <- takeVar var
       msg `shouldEqual` "world"

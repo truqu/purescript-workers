@@ -46,7 +46,7 @@ import Data.Nullable     (Nullable, toMaybe, toNullable)
 import Data.String.Read  (class Read, read)
 
 import Workers.Service   (WORKER, Registration)
-import Workers.Class     (class MessagePort)
+import Workers.Class     (class Channel)
 
 
 --------------------
@@ -255,9 +255,7 @@ navigate =
 --------------------
 
 
-instance messagePortClient :: MessagePort Client where
-  messagePortConstructor _ =
-    "Client"
+instance channelClient :: Channel Client where
 
 
 instance showClientType :: Show ClientType where

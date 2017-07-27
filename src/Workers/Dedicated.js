@@ -11,3 +11,23 @@ exports._terminate = function _terminate(wrk) {
         wrk.terminate();
     };
 };
+
+exports._onMessage = function _onMessage(wrk) {
+    return function onMessage2(f) {
+        return function eff() {
+            wrk.onmessage = function onmessage(e) {
+                f(e.data)();
+            };
+        };
+    };
+};
+
+exports._onMessageError = function _onMessageError(wrk) {
+    return function onMessageError2(f) {
+        return function eff() {
+            wrk.onmessageerror = function onmessageerror(e) {
+                f(e.target.error)(); // FIXME
+            };
+        };
+    };
+};

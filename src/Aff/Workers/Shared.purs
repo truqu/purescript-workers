@@ -12,8 +12,8 @@ import Prelude                 ((<<<))
 import Control.Monad.Aff       (Aff)
 import Control.Monad.Eff.Class (liftEff)
 
-import Aff.MessagePort         (MessagePort, close, start, onMessage, onMessageError, postMessage, postMessage')
-import Aff.Workers             (WORKER, Credentials(..), Location, Navigator, Options, WorkerType(..), onError)
+import Aff.MessagePort         (MessagePort, close, start, onMessage, onMessageError)
+import Aff.Workers             (WORKER, Credentials(..), Location, Navigator, Options, WorkerType(..), onError, postMessage, postMessage')
 import Workers.Shared           as W
 import Workers.Shared          (Shared)
 

@@ -5,7 +5,7 @@ module Workers.Service
   , controller
   , getRegistration
   , onControllerChange
-  , onMessage'
+  , onMessage
   , ready
   , register
   , register'
@@ -29,7 +29,6 @@ module Workers.Service
   , onUpdateFound
 
   -- * Re-exports
-  , module MessagePort
   , module Workers
   ) where
 
@@ -43,9 +42,8 @@ import Data.Nullable           (Nullable, toMaybe, toNullable)
 import Data.String.Read        (class Read, read)
 import Data.Time.Duration      (Milliseconds(Milliseconds))
 
-import MessagePort             (postMessage, postMessage', onMessage)
-import Workers                 (WORKER, WorkerType(..), onError)
-import Workers.Class           (class AbstractWorker, class MessagePort)
+import Workers                 (WORKER, WorkerType(..), onError, postMessage, postMessage')
+import Workers.Class           (class AbstractWorker, class Channel)
 
 
 --------------------
@@ -104,11 +102,11 @@ onControllerChange =
     _onControllerChange
 
 
-onMessage'
+onMessage
  :: forall e e' msg
  .  (msg -> Eff ( | e') Unit)
  -> Eff (worker :: WORKER | e) Unit
-onMessage' =
+onMessage =
   _onMessage
 
 
@@ -244,14 +242,10 @@ onUpdateFound =
 --------------------
 
 
-instance abstractWorkerService :: AbstractWorker Service where
-  abstractWorkerConstructor _ =
-    "Service"
+instance abstractWorkerService :: AbstractWorker Service
 
 
-instance messagePortService :: MessagePort Service where
-  messagePortConstructor _ =
-    "Service"
+instance channelService :: Channel Service
 
 
 instance showState :: Show State where

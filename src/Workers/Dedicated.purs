@@ -2,6 +2,8 @@ module Workers.Dedicated
   -- * Types
   ( Dedicated
   , terminate
+  , onMessage
+  , onMessageError
 
   -- * Constructors
   , new
@@ -9,16 +11,15 @@ module Workers.Dedicated
 
   -- * Re-exports
   , module Workers
-  , module MessagePort
   ) where
 
-import Prelude           (Unit, show)
+import Prelude                     (Unit, show)
 
-import Control.Monad.Eff (Eff)
+import Control.Monad.Eff           (Eff)
+import Control.Monad.Eff.Exception (Error)
 
-import Workers           (WORKER, Credentials(..), Location, Navigator, Options, WorkerType(..), onError)
-import MessagePort       (onMessage, onMessageError, postMessage, postMessage')
-import Workers.Class     (class AbstractWorker, class MessagePort)
+import Workers                     (WORKER, Credentials(..), Location, Navigator, Options, WorkerType(..), onError, postMessage, postMessage')
+import Workers.Class               (class AbstractWorker, class Channel)
 
 
 --------------------
@@ -76,24 +77,54 @@ terminate =
   _terminate
 
 
+-- | Event handler for the `message` event
+onMessage
+  :: forall e e' msg
+  .  Dedicated
+  -> (msg -> Eff ( | e') Unit)
+  -> Eff (worker :: WORKER | e) Unit
+onMessage port =
+  _onMessage port
+
+
+-- | Event handler for the `messageError` event
+onMessageError
+  :: forall e e'
+  .  Dedicated
+  -> (Error -> Eff ( | e') Unit)
+  -> Eff (worker :: WORKER | e) Unit
+onMessageError port =
+  _onMessageError port
+
+
 --------------------
 -- INSTANCES
 --------------------
 
 
-instance abstractWorkerDedicated :: AbstractWorker Dedicated where
-  abstractWorkerConstructor _ =
-    "Dedicated"
+instance abstractWorkerDedicated :: AbstractWorker Dedicated
 
 
-instance messagePortDedicated :: MessagePort Dedicated where
-  messagePortConstructor _ =
-    "Dedicated"
+instance channelDedicated :: Channel Dedicated
 
 
 --------------------
 -- FFI
 --------------------
+
+
+foreign import _onMessage
+  :: forall e e' msg
+  .  Dedicated
+  -> (msg -> Eff ( | e') Unit)
+  -> Eff (worker :: WORKER | e) Unit
+
+
+foreign import _onMessageError
+  :: forall e e'
+  .  Dedicated
+  -> (Error -> Eff ( | e') Unit)
+  -> Eff (worker :: WORKER | e) Unit
 
 
 foreign import _new

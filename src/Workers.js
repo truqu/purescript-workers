@@ -7,3 +7,13 @@ exports._onError = function _onError(wrk) {
         };
     };
 };
+
+exports._postMessage = function postMessage(channel) {
+    return function postMessage2(msg) {
+        return function postMessage3(transfer) {
+            return function eff() {
+                channel.postMessage(msg, transfer.length > 0 ? transfer : undefined);
+            };
+        };
+    };
+};

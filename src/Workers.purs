@@ -6,15 +6,19 @@ module Workers
   , Options
   , Credentials(..)
   , onError
+  , postMessage
+  , postMessage'
   ) where
 
 import Prelude
 
 import Control.Monad.Eff           (kind Effect, Eff)
-import Control.Monad.Eff.Exception (Error)
+import Control.Monad.Eff.Exception (EXCEPTION, Error)
 import Data.Generic                (class Generic, gShow)
+import Data.Maybe                  (Maybe(..))
+import Data.String.Read            (class Read)
 
-import Workers.Class               (class AbstractWorker)
+import Workers.Class               (class AbstractWorker, class Channel)
 
 
 --------------------
@@ -89,6 +93,29 @@ onError =
   _onError
 
 
+-- | Clones message and transmits it to the Worker object.
+postMessage
+  :: forall e msg channel. (Channel channel)
+  => channel
+  -> msg
+  -> Eff (worker :: WORKER, exception :: EXCEPTION | e) Unit
+postMessage p msg =
+  _postMessage p msg []
+
+
+-- | Clones message and transmits it to the port object associated with
+-- | dedicatedWorker-Global.transfer can be passed as a list of objects
+-- | that are to be transferred rather than cloned.
+postMessage'
+  :: forall e msg transfer channel. (Channel channel)
+  => channel
+  -> msg
+  -> Array transfer
+  -> Eff (worker :: WORKER, exception :: EXCEPTION | e) Unit
+postMessage' =
+  _postMessage
+
+
 --------------------
 -- INSTANCES
 --------------------
@@ -123,6 +150,23 @@ instance showCredentials :: Show Credentials where
       Include    -> "include"
 
 
+instance readWorkerType :: Read WorkerType where
+  read s =
+    case s of
+      "classic" -> pure Classic
+      "module"  -> pure Module
+      _         -> Nothing
+
+
+instance readCredentials :: Read Credentials where
+  read s =
+    case s of
+      "omit"        -> pure Omit
+      "same-origin" -> pure SameOrigin
+      "include"     -> pure Include
+      _             -> Nothing
+
+
 --------------------
 -- FFI
 --------------------
@@ -133,3 +177,11 @@ foreign import _onError
   .  worker
   -> (Error -> Eff ( | e') Unit)
   -> Eff (worker :: WORKER | e) Unit
+
+
+foreign import _postMessage
+  :: forall e msg transfer channel
+  .  channel
+  ->  msg
+  -> Array transfer
+  -> Eff (worker :: WORKER, exception :: EXCEPTION | e) Unit

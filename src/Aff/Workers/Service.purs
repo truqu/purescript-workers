@@ -2,7 +2,7 @@ module Aff.Workers.Service
   ( controller
   , getRegistration
   , onControllerChange
-  , onMessage'
+  , onMessage
   , ready
   , register
   , register'
@@ -19,7 +19,6 @@ module Aff.Workers.Service
   , unregister
   , onUpdateFound
   , module Workers.Service
-  , module Aff.MessagePort
   , module Aff.Workers
   ) where
 
@@ -31,8 +30,7 @@ import Control.Monad.Eff       (Eff)
 import Control.Monad.Eff.Class (liftEff)
 import Data.Maybe              (Maybe)
 
-import Aff.MessagePort         (onMessage, postMessage, postMessage')
-import Aff.Workers             (WORKER, WorkerType(..), onError)
+import Aff.Workers             (WORKER, WorkerType(..), onError, postMessage, postMessage')
 import Workers.Service         (Service, Registration, RegistrationOptions, State(..))
 import Workers.Service          as W
 
@@ -62,12 +60,12 @@ onControllerChange =
   liftEff <<< W.onControllerChange
 
 
-onMessage'
+onMessage
   :: forall e e' msg
   .  (msg -> Eff ( | e') Unit)
   -> Aff (worker :: WORKER | e) Unit
-onMessage' =
-  liftEff <<< W.onMessage'
+onMessage =
+  liftEff <<< W.onMessage
 
 
 ready

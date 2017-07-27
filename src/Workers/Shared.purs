@@ -16,8 +16,8 @@ import Prelude           (show)
 
 import Control.Monad.Eff (Eff)
 
-import MessagePort       (MessagePort, close, start, onMessage, onMessageError, postMessage, postMessage')
-import Workers           (WORKER, Credentials(..), Location, Navigator, Options, WorkerType(..), onError)
+import MessagePort       (MessagePort, close, start, onMessage, onMessageError)
+import Workers           (WORKER, Credentials(..), Location, Navigator, Options, WorkerType(..), onError, postMessage, postMessage')
 import Workers.Class     (class AbstractWorker)
 
 
@@ -81,9 +81,7 @@ port =
 --------------------
 
 
-instance abstractWorkerShared :: AbstractWorker Shared where
-  abstractWorkerConstructor _ =
-    "Shared"
+instance abstractWorkerShared :: AbstractWorker Shared
 
 
 --------------------

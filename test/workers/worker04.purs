@@ -7,8 +7,7 @@ import Control.Monad.Eff.Exception (EXCEPTION)
 import Data.NonEmpty               (head)
 
 import GlobalScope.Shared          (onConnect)
-import MessagePort                 (postMessage)
-import Workers                     (WORKER)
+import Workers.Shared              (WORKER, postMessage)
 
 
 -- | Shared Worker working through a port
