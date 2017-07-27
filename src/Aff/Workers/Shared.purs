@@ -3,8 +3,8 @@ module Aff.Workers.Shared
   , new
   , new'
   , module Workers.Shared
-  , module Aff.Workers
   , module Aff.MessagePort
+  , module Aff.Workers
   ) where
 
 import Prelude                 ((<<<))

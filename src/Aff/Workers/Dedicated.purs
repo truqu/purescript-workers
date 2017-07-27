@@ -3,8 +3,8 @@ module Aff.Workers.Dedicated
   , new'
   , terminate
   , module Workers.Dedicated
-  , module Aff.Workers
   , module Aff.MessagePort
+  , module Aff.Workers
   ) where
 
 
