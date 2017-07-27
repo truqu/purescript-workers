@@ -110,17 +110,29 @@ main = runMocha do
         DedicatedWorker.terminate worker
         putVar var unit
       )
-      DedicatedWorker.postMessage worker "hello"
+      DedicatedWorker.postMessage worker "patate"
       msg <- takeVar var
       msg `shouldEqual` unit
 
-    it "Service Worker" do
+    it "Service Worker - using get with source id" do
       var <- makeVar
       registration <- ServiceWorker.register "base/worker08.js"
       ServiceWorker.onMessage (\msg -> launchAff' do
         putVar var msg
       )
       worker <- ServiceWorker.wait
-      ServiceWorker.postMessage worker "hello"
+      ServiceWorker.postMessage worker "patate"
       msg <- takeVar var
-      msg `shouldEqual` "world"
+      msg `shouldEqual` "PATATE"
+
+
+    it "Service Worker - matching all clients" do
+      var <- makeVar
+      registration <- ServiceWorker.register "base/worker09.js"
+      ServiceWorker.onMessage (\msg -> launchAff' do
+        putVar var msg
+      )
+      worker <- ServiceWorker.wait
+      ServiceWorker.postMessage worker "patate"
+      msg <- takeVar var
+      msg `shouldEqual` "PATATE"

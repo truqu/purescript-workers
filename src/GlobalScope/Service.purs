@@ -20,6 +20,7 @@ module GlobalScope.Service
 
   -- * Client Interface
   , Client
+  , ClientId
   , ClientType(..)
   , url
   , frameType
