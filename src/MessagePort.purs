@@ -19,7 +19,7 @@ import Control.Monad.Eff           (Eff)
 import Control.Monad.Eff.Exception (EXCEPTION, Error)
 
 import Workers                     (WORKER)
-import Workers.Class               (class MessagePort)
+import Workers.Class               (class MessagePort, messagePortConstructor)
 
 
 --------------------
@@ -63,8 +63,8 @@ onMessage
   => port
   -> (msg -> Eff ( | e') Unit)
   -> Eff (worker :: WORKER | e) Unit
-onMessage =
-  _onMessage
+onMessage port =
+  _onMessage (messagePortConstructor port) port
 
 
 -- | Event handler for the `messageError` event
@@ -73,8 +73,8 @@ onMessageError
   => port
   -> (Error -> Eff ( | e') Unit)
   -> Eff (worker :: WORKER | e) Unit
-onMessageError =
-  _onMessageError
+onMessageError port =
+  _onMessageError (messagePortConstructor port) port
 
 
 -- | TODO DOC
@@ -120,14 +120,16 @@ foreign import _postMessage
 
 foreign import _onMessage
   :: forall e e' msg port
-  .  port
+  .  String
+  -> port
   -> (msg -> Eff ( | e') Unit)
   -> Eff (worker :: WORKER | e) Unit
 
 
 foreign import _onMessageError
   :: forall e e' port
-  .  port
+  .  String
+  -> port
   -> (Error -> Eff ( | e') Unit)
   -> Eff (worker :: WORKER | e) Unit
 
