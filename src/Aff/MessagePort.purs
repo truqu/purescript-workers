@@ -1,5 +1,10 @@
 module Aff.MessagePort
-  ( class MessagePortAff, postMessage, postMessage', onMessage, onMessageError
+  ( postMessage
+  , postMessage'
+  , onMessage
+  , onMessageError
+  , close
+  , start
   , module MessagePort
   ) where
 
@@ -10,53 +15,68 @@ import Control.Monad.Eff           (Eff)
 import Control.Monad.Eff.Class     (liftEff)
 import Control.Monad.Eff.Exception (EXCEPTION, Error)
 
-import Aff.Workers                 (WORKER, DedicatedWorker)
+import Aff.Workers                 (WORKER)
 import MessagePort                  as MP
-import MessagePort                  hiding  (class MessagePortEff, postMessage, postMessage', onMessage, onMessageError)
+import MessagePort                 (MessagePort)
+import Workers.Class               (class MessagePort)
 
 
-class MessagePortAff port where
-  -- | Clones message and transmits it to the Worker object.
-  postMessage
-    :: forall e msg
-    . port
-    -> msg
-    -> Aff (worker :: WORKER, exception :: EXCEPTION | e) Unit
-
-  -- | Clones message and transmits it to the port object associated with
-  -- | dedicatedportGlobal.transfer can be passed as a list of objects that are to be
-  -- | transferred rather than cloned.
-  postMessage'
-    :: forall e msg transfer
-    . port
-    -> msg
-    -> Array transfer
-    -> Aff (worker :: WORKER, exception :: EXCEPTION | e) Unit
-
-  -- | Event handler for the `message` event
-  onMessage
-    :: forall e e' msg
-    .  port
-    -> (msg -> Eff ( | e') Unit)
-    -> Aff (worker :: WORKER | e) Unit
-
-  -- | Event handler for the `messageError` event
-  onMessageError
-    :: forall e e'
-    .  port
-    -> (Error -> Eff ( | e') Unit)
-    -> Aff (worker :: WORKER | e) Unit
+-- | Clones message and transmits it to the Worker object.
+postMessage
+  :: forall e msg port. (MessagePort port)
+  => port
+  -> msg
+  -> Aff (worker :: WORKER, exception :: EXCEPTION | e) Unit
+postMessage p =
+  liftEff <<< MP.postMessage p
 
 
-instance messagePortMessagePortAff :: MessagePortAff MessagePort where
-  postMessage p      = liftEff <<< MP.postMessage p
-  postMessage' p msg = liftEff <<< MP.postMessage' p msg
-  onMessage p        = liftEff <<< MP.onMessage p
-  onMessageError p   = liftEff <<< MP.onMessageError p
+-- | Clones message and transmits it to the port object associated with
+-- | dedicatedportGlobal.transfer can be passed as a list of objects that are to be
+-- | transferred rather than cloned.
+postMessage'
+  :: forall e msg transfer port. (MessagePort port)
+  => port
+  -> msg
+  -> Array transfer
+  -> Aff (worker :: WORKER, exception :: EXCEPTION | e) Unit
+postMessage' p m =
+  liftEff <<< MP.postMessage' p m
 
 
-instance messagePortDedicatedWorkerAff :: MessagePortAff DedicatedWorker where
-  postMessage p      = liftEff <<< MP.postMessage p
-  postMessage' p msg = liftEff <<< MP.postMessage' p msg
-  onMessage p        = liftEff <<< MP.onMessage p
-  onMessageError p   = liftEff <<< MP.onMessageError p
+-- | Event handler for the `message` event
+onMessage
+  :: forall e e' msg port. (MessagePort port)
+  => port
+  -> (msg -> Eff ( | e') Unit)
+  -> Aff (worker :: WORKER | e) Unit
+onMessage p =
+  liftEff <<< MP.onMessage p
+
+
+-- | Event handler for the `messageError` event
+onMessageError
+  :: forall e e' port. (MessagePort port)
+  => port
+  -> (Error -> Eff ( | e') Unit)
+  -> Aff (worker :: WORKER | e) Unit
+onMessageError p =
+  liftEff <<< MP.onMessageError p
+
+
+-- | TODO DOC
+close
+  :: forall e
+  .  MessagePort
+  -> Aff (worker :: WORKER | e) Unit
+close =
+  liftEff <<< MP.close
+
+
+-- | TODO DOC
+start
+  :: forall e
+  .  MessagePort
+  -> Aff (worker :: WORKER | e) Unit
+start =
+  liftEff <<< MP.start

@@ -1,20 +1,51 @@
 module Aff.Workers.Shared
-  ( class SharedWorkerAff, port
+  ( port
+  , new
+  , new'
+  , module Workers.Shared
   , module Aff.Workers
   , module Aff.MessagePort
   ) where
 
-import Aff.MessagePort (class MessagePortAff, MessagePort, onMessage, onMessageError, postMessage, postMessage')
-import Aff.Workers     (class AbstractWorkerAff, Credentials(..), Location(..), Navigator(..), SharedWorker, WORKER, WorkerOptions, WorkerType(..), new, new', onError)
-import Workers.Shared   as W
+import Prelude                 ((<<<))
+
+import Control.Monad.Aff       (Aff)
+import Control.Monad.Eff.Class (liftEff)
+
+import Aff.MessagePort         (MessagePort, close, start, onMessage, onMessageError, postMessage, postMessage')
+import Aff.Workers             (WORKER, Credentials(..), Location, Navigator, Options, WorkerType(..), onError)
+import Workers.Shared           as W
+import Workers.Shared          (Shared)
 
 
-class (AbstractWorkerAff worker) <= SharedWorkerAff worker where
-  -- | Aborts worker’s associated global environment.
-  port
-    :: worker
-    -> MessagePort
+-- | Returns a new Worker object. scriptURL will be fetched and executed in the background,
+-- | creating a new global environment for which worker represents the communication channel.
+new
+  :: forall e
+  .  String
+  -> Aff (worker :: WORKER  | e) Shared
+new =
+  liftEff <<< W.new
 
 
-instance dedicatedWorkerAff :: SharedWorkerAff SharedWorker where
-  port = W.port
+-- | Returns a new Worker object. scriptURL will be fetched and executed in the background,
+-- | creating a new global environment for which worker represents the communication channel.
+-- | options can be used to define the name of that global environment via the name option,
+-- | primarily for debugging purposes. It can also ensure this new global environment supports
+-- | JavaScript modules (specify type: "module"), and if that is specified, can also be used
+-- | to specify how scriptURL is fetched through the credentials option
+new'
+  :: forall e
+  .  String
+  -> Options
+  -> Aff (worker :: WORKER | e) Shared
+new' url =
+  liftEff <<< W.new' url
+
+
+-- | Aborts worker’s associated global environment.
+port
+  :: Shared
+  -> MessagePort
+port =
+  W.port

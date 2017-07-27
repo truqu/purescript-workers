@@ -1,5 +1,8 @@
 module Aff.ApplicationCache
-  ( module ApplicationCache
+  ( abort
+  , swapCache
+  , update
+  , module ApplicationCache
   ) where
 
 import Prelude
