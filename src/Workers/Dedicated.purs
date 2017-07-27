@@ -1,30 +1,79 @@
 module Workers.Dedicated
-  ( class DedicatedWorkerEff, terminate
+  ( new
+  , new'
+  , terminate
   , module Workers
   , module MessagePort
   ) where
 
-import Prelude           (Unit)
+import Prelude           (Unit, show)
 
 import Control.Monad.Eff (Eff)
 
-import Workers           (class AbstractWorkerEff, Credentials(..), DedicatedWorker, Location, Navigator, WORKER, WorkerOptions, WorkerType(..), new, new', onError)
-import MessagePort       (class MessagePortEff, MessagePort, onMessage, onMessageError, postMessage, postMessage')
+import Workers           (WORKER, Dedicated, Credentials(..), Location, Navigator, Options, WorkerType(..), onError)
+import MessagePort       (onMessage, onMessageError, postMessage, postMessage')
 
 
-class (AbstractWorkerEff worker, MessagePortEff worker) <= DedicatedWorkerEff worker where
-  -- | Aborts worker’s associated global environment.
-  terminate
-    :: forall e
-    .  worker
-    -> Eff (worker :: WORKER | e) Unit
+--------------------
+-- METHODS
+--------------------
 
 
-instance dedicatedWorker :: DedicatedWorkerEff DedicatedWorker where
-  terminate = _terminate
+-- | Returns a new Worker object. scriptURL will be fetched and executed in the background,
+-- | creating a new global environment for which worker represents the communication channel.
+new
+  :: forall e
+  .  String
+  -> Eff (worker :: WORKER  | e) Dedicated
+new url =
+  _new url
+    { name: ""
+    , requestCredentials: (show Omit)
+    , workerType: (show Classic)
+    }
+
+
+-- | Returns a new Worker object. scriptURL will be fetched and executed in the background,
+-- | creating a new global environment for which worker represents the communication channel.
+-- | options can be used to define the name of that global environment via the name option,
+-- | primarily for debugging purposes. It can also ensure this new global environment supports
+-- | JavaScript modules (specify type: "module"), and if that is specified, can also be used
+-- | to specify how scriptURL is fetched through the credentials option
+new'
+  :: forall e
+  .  String
+  -> Options
+  -> Eff (worker :: WORKER | e) Dedicated
+new' url opts =
+  _new url
+    { name: opts.name
+    , requestCredentials: (show opts.requestCredentials)
+    , workerType: (show opts.workerType)
+    }
+
+
+-- | Aborts worker’s associated global environment.
+terminate
+  :: forall e
+  .  Dedicated
+  -> Eff (worker :: WORKER | e) Unit
+terminate =
+  _terminate
+
+
+--------------------
+-- FFI
+--------------------
+
+
+foreign import _new
+  :: forall e
+  .  String
+  -> { name :: String, requestCredentials :: String, workerType :: String }
+  -> Eff (worker :: WORKER | e) Dedicated
 
 
 foreign import _terminate
   :: forall e
-  .  DedicatedWorker
+  .  Dedicated
   -> Eff (worker :: WORKER | e) Unit

@@ -1,10 +1,10 @@
-exports.close = function close(port) {
+exports._close = function _close(port) {
     return function eff() {
         port.close();
     };
 };
 
-exports.start = function start(port) {
+exports._start = function _start(port) {
     return function eff() {
         port.start();
     };

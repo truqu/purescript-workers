@@ -13,8 +13,7 @@ import Data.NonEmpty     (NonEmpty(..))
 
 import ApplicationCache  (APPCACHE, ApplicationCache, Status(..), abort, status, swapCache, update)
 import GlobalScope       (close, location, navigator, onError, onLanguageChange, onOffline, onOnline, onRejectionHandled, onUnhandledRejection)
-import MessagePort       (MessagePort)
-import Workers           (WORKER)
+import Workers           (WORKER, MessagePort)
 
 
   -- | Returns sharedWorkerGlobal’s name, i.e. the value given to the SharedWorker constructor.
