@@ -9,9 +9,12 @@ module Workers.Service
   , controller
   , getRegistration
   , onControllerChange
+  , onMessage'
   , ready
   , register
+  , register'
   , startMessages
+  , wait
 
   -- * Service Worker Manipulations
   , onStateChange
@@ -34,15 +37,17 @@ module Workers.Service
 
 import Prelude
 
-import Control.Monad.Aff (Aff)
-import Control.Monad.Eff (Eff)
-import Data.Maybe        (Maybe(..))
-import Data.Nullable     (Nullable, toMaybe, toNullable)
-import Data.String.Read  (class Read, read)
+import Control.Monad.Aff       (Aff, delay)
+import Control.Monad.Eff       (Eff)
+import Control.Monad.Eff.Class (liftEff)
+import Data.Maybe              (Maybe(..))
+import Data.Nullable           (Nullable, toMaybe, toNullable)
+import Data.String.Read        (class Read, read)
+import Data.Time.Duration      (Milliseconds(Milliseconds))
 
-import MessagePort       (postMessage, postMessage', onMessage)
-import Workers           (WORKER, WorkerType(..), onError)
-import Workers.Class     (class AbstractWorker, class MessagePort)
+import MessagePort             (postMessage, postMessage', onMessage)
+import Workers                 (WORKER, WorkerType(..), onError)
+import Workers.Class           (class AbstractWorker, class MessagePort)
 
 
 --------------------
@@ -101,6 +106,14 @@ onControllerChange =
     _onControllerChange
 
 
+onMessage'
+ :: forall e e' msg
+ .  (msg -> Eff ( | e') Unit)
+ -> Eff (worker :: WORKER | e) Unit
+onMessage' =
+  _onMessage
+
+
 ready
   :: forall e
   .  Aff (worker :: WORKER | e) Registration
@@ -111,9 +124,20 @@ ready =
 register
   :: forall e
   .  String
+  -> Aff (worker :: WORKER | e) Registration
+register url =
+  _register url
+    { scope: ""
+    , workerType: Classic
+    }
+
+
+register'
+  :: forall e
+  .  String
   -> RegistrationOptions
   -> Aff (worker :: WORKER | e) Registration
-register =
+register' =
   _register
 
 
@@ -122,6 +146,19 @@ startMessages
   .  Eff (worker :: WORKER | e) Unit
 startMessages =
   _startMessages
+
+
+wait
+  :: forall e
+  .  Aff (worker :: WORKER | e) Service
+wait = do
+  mworker <- liftEff controller
+  case mworker of
+    Nothing -> do
+      delay (Milliseconds 50.0)
+      wait
+    Just worker -> do
+      pure worker
 
 
 -- SERVICE WORKER ~ instance methods
@@ -259,6 +296,12 @@ foreign import _getRegistration
 foreign import _onControllerChange
   :: forall e e'
   .  Eff ( | e') Unit
+  -> Eff (worker :: WORKER | e) Unit
+
+
+foreign import _onMessage
+  :: forall e e' msg
+  .  (msg -> Eff ( | e') Unit)
   -> Eff (worker :: WORKER | e) Unit
 
 

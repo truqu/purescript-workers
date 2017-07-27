@@ -1,9 +1,7 @@
 /* SERVICE WORKER CONTAINER */
 
-exports._controller = function _controller() {
-    return function eff() {
-        return navigator.serviceWorker.controller;
-    };
+exports._controller = function eff() {
+    return navigator.serviceWorker.controller;
 };
 
 exports._getRegistration = function _getRegistration(url) {
@@ -26,16 +24,23 @@ exports._onControllerChange = function _onControllerChange(f) {
     };
 };
 
-exports._ready = function _ready() {
-    return function aff(success, error) {
-        try {
-            navigator.serviceWorker
-                     .ready
-                     .then(success, error);
-        } catch (err) {
-            error(err);
-        }
+exports._onMessage = function _onMessage(f) {
+    return function eff() {
+        navigator.serviceWorker.onmessage = function onmessage(e) {
+            f(e.data)();
+        };
     };
+};
+
+
+exports._ready = function aff(success, error) {
+    try {
+        navigator.serviceWorker
+                 .ready
+                 .then(success, error);
+    } catch (err) {
+        error(err);
+    }
 };
 
 exports._register = function _register(url) {
@@ -52,11 +57,9 @@ exports._register = function _register(url) {
     };
 };
 
-exports._startMessages = function _startMessages() {
-    return function eff() {
-        navigator.serviceWorker
-                 .startMessages();
-    };
+exports._startMessages = function eff() {
+    navigator.serviceWorker
+             .startMessages();
 };
 
 /* SERVICE WORKER */

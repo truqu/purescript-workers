@@ -2,9 +2,12 @@ module Aff.Workers.Service
   ( controller
   , getRegistration
   , onControllerChange
+  , onMessage'
   , ready
   , register
+  , register'
   , startMessages
+  , wait
   , onStateChange
   , scriptURL
   , state
@@ -26,7 +29,7 @@ import Prelude                 (Unit, (<<<))
 import Control.Monad.Aff       (Aff)
 import Control.Monad.Eff       (Eff)
 import Control.Monad.Eff.Class (liftEff)
-import Data.Maybe              (Maybe(..))
+import Data.Maybe              (Maybe)
 
 import Aff.MessagePort         (onMessage, postMessage, postMessage')
 import Aff.Workers             (WORKER, WorkerType(..), onError)
@@ -59,6 +62,14 @@ onControllerChange =
   liftEff <<< W.onControllerChange
 
 
+onMessage'
+  :: forall e e' msg
+  .  (msg -> Eff ( | e') Unit)
+  -> Aff (worker :: WORKER | e) Unit
+onMessage' =
+  liftEff <<< W.onMessage'
+
+
 ready
   :: forall e
   .  Aff (worker :: WORKER | e) Registration
@@ -69,10 +80,18 @@ ready =
 register
   :: forall e
   .  String
-  -> RegistrationOptions
   -> Aff (worker :: WORKER | e) Registration
 register =
   W.register
+
+
+register'
+  :: forall e
+  .  String
+  -> RegistrationOptions
+  -> Aff (worker :: WORKER | e) Registration
+register' =
+  W.register'
 
 
 startMessages
@@ -80,6 +99,13 @@ startMessages
   .  Aff (worker :: WORKER | e) Unit
 startMessages =
   liftEff W.startMessages
+
+
+wait
+  :: forall e
+  . Aff (worker :: WORKER | e) Service
+wait =
+  W.wait
 
 
 -- SERVICE WORKER ~ instance methods

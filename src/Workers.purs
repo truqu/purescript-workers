@@ -14,7 +14,7 @@ import Control.Monad.Eff           (kind Effect, Eff)
 import Control.Monad.Eff.Exception (Error)
 import Data.Generic                (class Generic, gShow)
 
-import Workers.Class               (class AbstractWorker, class MessagePort)
+import Workers.Class               (class AbstractWorker)
 
 
 --------------------
