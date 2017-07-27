@@ -3,11 +3,17 @@ module.exports = (config) => {
         autoWatch: true,
         singleRun: true,
         browsers: ['Chrome'],
+        basePath: 'dist/karma',
+        customHeaders: [{
+            match: '.*',
+            name: 'Service-Worker-Allowed',
+            value: '/',
+        }],
         files: [
-            'dist/karma/index.js',
+            'index.js',
             {
                 watched: false,
-                pattern: 'dist/karma/worker*.js',
+                pattern: 'worker*.js',
                 included: false,
                 served: true,
             },
@@ -24,7 +30,7 @@ module.exports = (config) => {
         reporters: ['spec'],
         client: {
             mocha: {
-                timeout: 1000,
+                timeout: 10000,
             },
         },
     });
