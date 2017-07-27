@@ -10,10 +10,14 @@ import Test.Spec                   (Spec, describe, it)
 import Test.Spec.Assertions        (shouldEqual)
 import Test.Spec.Mocha             (MOCHA, runMocha)
 
-import Aff.MessagePort             (onMessage, postMessage)
-import Aff.Workers                 (WORKER, Location(..), Navigator(..), new, onError)
-import Aff.Workers.Dedicated       (DedicatedWorker, terminate)
-import Aff.Workers.Shared          (SharedWorker, port)
+import Aff.Workers                 (WORKER, Location(..), Navigator(..))
+import Aff.Workers.Dedicated       (Dedicated)
+import Aff.Workers.Shared          (Shared)
+
+import Aff.Workers                  as Workers
+import Aff.MessagePort              as MessagePort
+import Aff.Workers.Dedicated        as DedicatedWorkers
+import Aff.Workers.Shared           as SharedWorkers
 
 it' :: forall e. String -> Eff ( | e) Unit -> Spec e Unit
 it' str body =
@@ -30,38 +34,38 @@ main = runMocha do
   describe "[Dedicated Worker] Basic" do
     it "Hello World" do
       var <- makeVar
-      (worker :: DedicatedWorker) <- new "base/dist/karma/worker01.js"
-      onMessage worker (\msg -> launchAff' do
+      (worker :: Dedicated) <- DedicatedWorkers.new "base/dist/karma/worker01.js"
+      MessagePort.onMessage worker (\msg -> launchAff' do
         putVar var msg
       )
-      postMessage worker "hello"
+      MessagePort.postMessage worker "hello"
       msg <- takeVar var
       msg `shouldEqual` "world"
 
     it "WorkerLocation object" do
       var <- makeVar
-      (worker :: DedicatedWorker) <- new "base/dist/karma/worker02.js"
-      onMessage worker (\msg -> launchAff' do
+      (worker :: Dedicated) <- DedicatedWorkers.new "base/dist/karma/worker02.js"
+      MessagePort.onMessage worker (\msg -> launchAff' do
         putVar var msg
       )
-      postMessage worker unit
+      MessagePort.postMessage worker unit
       Location loc <- takeVar var
       loc.pathname `shouldEqual` "/base/dist/karma/worker02.js"
 
     it "WorkerNavigator object" do
       var <- makeVar
-      (worker :: DedicatedWorker) <- new "base/dist/karma/worker03.js"
-      onMessage worker (\msg -> launchAff' do
+      (worker :: Dedicated) <- DedicatedWorkers.new "base/dist/karma/worker03.js"
+      MessagePort.onMessage worker (\msg -> launchAff' do
         putVar var msg
       )
-      postMessage worker unit
+      MessagePort.postMessage worker unit
       Navigator nav <- takeVar var
       nav.onLine `shouldEqual` true
 
     it "Shared Workers Connect" do
       var <- makeVar
-      (worker :: SharedWorker) <- new "base/dist/karma/worker04.js"
-      onMessage (port worker) (\msg -> launchAff' do
+      (worker :: Shared) <- SharedWorkers.new "base/dist/karma/worker04.js"
+      MessagePort.onMessage (SharedWorkers.port worker) (\msg -> launchAff' do
         putVar var msg
       )
       (msg :: Boolean) <- takeVar var
@@ -69,8 +73,8 @@ main = runMocha do
 
     it "Error Event - Handled by Worker" do
       var <- makeVar
-      (worker :: DedicatedWorker) <- new "base/dist/karma/worker05.js"
-      onMessage worker (\msg -> launchAff' do
+      (worker :: Dedicated) <- DedicatedWorkers.new "base/dist/karma/worker05.js"
+      MessagePort.onMessage worker (\msg -> launchAff' do
         putVar var msg
       )
       msg <- takeVar var
@@ -78,8 +82,8 @@ main = runMocha do
 
     it "Error Event - Bubble to Parent" do
       var <- makeVar
-      (worker :: DedicatedWorker) <- new "base/dist/karma/worker06.js"
-      onError worker (\err -> launchAff' do
+      (worker :: Dedicated) <- DedicatedWorkers.new "base/dist/karma/worker06.js"
+      DedicatedWorkers.onError worker (\err -> launchAff' do
         putVar var err
       )
       (err :: Error) <- takeVar var
@@ -87,20 +91,20 @@ main = runMocha do
 
     it "Data Clone Error" do
       var <- makeVar
-      (worker :: DedicatedWorker) <- new "base/dist/karma/worker07.js"
-      onMessage worker (\msg -> launchAff' do
+      (worker :: Dedicated) <- DedicatedWorkers.new "base/dist/karma/worker07.js"
+      MessagePort.onMessage worker (\msg -> launchAff' do
         putVar var msg
       )
       msg <- takeVar var
       msg `shouldEqual` "DataCloneError"
 
-    it "Worker Terminate" do
+    it "Worker DedicatedWorkers.terminate" do
       var <- makeVar
-      (worker :: DedicatedWorker) <- new "base/dist/karma/worker01.js"
-      onMessage worker (\msg -> launchAff' do
-        terminate worker
+      (worker :: Dedicated) <- DedicatedWorkers.new "base/dist/karma/worker01.js"
+      MessagePort.onMessage worker (\msg -> launchAff' do
+        DedicatedWorkers.terminate worker
         putVar var unit
       )
-      postMessage worker "hello"
+      MessagePort.postMessage worker "hello"
       msg <- takeVar var
       msg `shouldEqual` unit
