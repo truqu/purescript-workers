@@ -12,6 +12,7 @@ import Prelude
 import Data.Maybe        (Maybe)
 import Control.Monad.Eff (Eff)
 import Control.Monad.Aff (Aff)
+import Data.Nullable     (Nullable, toMaybe, toNullable)
 
 import Workers           (WORKER, Service, WorkerType(..), onError)
 import MessagePort       (postMessage, postMessage')
@@ -96,20 +97,21 @@ data State
 --------------------
 
 
-register
-  :: forall e
-  .  String
-  -> RegistrationOptions
-  -> Aff (worker :: WORKER | e) Registration
-register =
-  _register
-
-
 controller
   :: forall e
   .  Eff (worker :: WORKER | e) (Maybe Service)
 controller =
-  _controller
+  toMaybe <$> _controller
+
+
+getRegistration
+  :: forall e
+  .  Maybe String
+  -> Aff (worker :: WORKER | e) (Maybe Registration)
+getRegistration =
+    toNullable >>> _getRegistration >=> toPureMaybe
+  where
+    toPureMaybe = toMaybe >>> pure
 
 
 ready
@@ -119,12 +121,13 @@ ready =
   _ready
 
 
-getRegistration
+register
   :: forall e
-  .  Maybe String
-  -> Aff (worker :: WORKER | e) (Maybe Registration)
-getRegistration =
-  _getRegistration
+  .  String
+  -> RegistrationOptions
+  -> Aff (worker :: WORKER | e) Registration
+register =
+  _register
 
 
 --------------------
@@ -156,7 +159,7 @@ foreign import _register
 
 foreign import _controller
   :: forall e
-  .  Eff (worker :: WORKER | e) (Maybe Service)
+  .  Eff (worker :: WORKER | e) (Nullable Service)
 
 
 foreign import _ready
@@ -166,5 +169,5 @@ foreign import _ready
 
 foreign import _getRegistration
   :: forall e
-  .  Maybe String
-  -> Aff (worker :: WORKER | e) (Maybe Registration)
+  .  Nullable String
+  -> Aff (worker :: WORKER | e) (Nullable Registration)
