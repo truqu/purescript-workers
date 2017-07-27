@@ -9,6 +9,7 @@
     "globals": {
         "Worker": true,
         "SharedWorker": true,
+        "self": true,
         "close": true,
         "location": true,
         "name": true,
@@ -28,6 +29,7 @@
         "import/no-extraneous-dependencies": 0,
         "import/no-unresolved": 0,
         "indent": ["error", 4],
+        "prefer-arrow-callback": 0,
         "no-param-reassign": 0,
         "no-underscore-dangle": 0,
         "no-var": 0,

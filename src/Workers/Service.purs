@@ -1,11 +1,7 @@
 module Workers.Service
-  -- * Types
-  ( Service
-  , Registration
-  , RegistrationOptions
-  , State(..)
-
   -- * Constructors & Setup
+  ( Registration
+  , RegistrationOptions
   , controller
   , getRegistration
   , onControllerChange
@@ -17,6 +13,8 @@ module Workers.Service
   , wait
 
   -- * Service Worker Manipulations
+  , State(..)
+  , Service
   , onStateChange
   , scriptURL
   , state
