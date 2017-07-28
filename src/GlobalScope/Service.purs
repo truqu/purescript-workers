@@ -50,6 +50,7 @@ import Data.String.Read  (class Read, read)
 import Workers.Service   (WORKER, Registration)
 import Workers.Class     (class Channel)
 import Cache             (CacheStorage)
+import Fetch             (Request, Response)
 
 
 --------------------
@@ -148,10 +149,10 @@ onActivate =
 
 onFetch
   :: forall e e'
-  .  Aff ( | e') Unit
+  .  (Request -> Aff ( | e') (Maybe Response))
   -> Eff (worker :: WORKER | e) Unit
 onFetch =
-  _onFetch
+  _onFetch toNullable
 
 
 onMessage
@@ -364,8 +365,9 @@ foreign import _onActivate
 
 
 foreign import _onFetch
-  :: forall e e'
-  .  Aff ( | e') Unit
+  :: forall a e e'
+  .  (Maybe a -> Nullable a)
+  -> (Request -> Aff ( | e') (Maybe Response))
   -> Eff (worker :: WORKER | e) Unit
 
 

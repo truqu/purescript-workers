@@ -44,16 +44,26 @@ exports._onActivate = function _onActivate(f) {
     };
 };
 
-exports._onFetch = function _onFetch(f) {
-    return function eff() {
-        self.onfetch = function onfetch(e) {
-            e.waitUntil(new Promise(function waitUntil(resolve, reject) {
-                try {
-                    f(resolve, reject);
-                } catch (err) {
-                    reject(err);
-                }
-            }));
+exports._onFetch = function _onFetch(toNullable) {
+    return function _onFetch2(f) {
+        return function eff() {
+            self.onfetch = function onfetch(e) {
+                e.respondWith(new Promise(function respondWith(resolve, reject) {
+                    try {
+                        f(e.request)(function onSuccess(mres) {
+                            var mres_ = toNullable(mres);
+                            if (mres_ != null) {
+                                resolve(mres_);
+                                return;
+                            }
+
+                            self.fetch(e.request).then(resolve, reject);
+                        }, reject);
+                    } catch (err) {
+                        reject(err);
+                    }
+                }));
+            };
         };
     };
 };

@@ -3,8 +3,6 @@ module Cache
   ( CACHE
   , Cache
   , CacheStorage
-  , Response
-  , RequestInfo
   , CacheQueryOptions
   , defaultCacheQueryOptions
 
@@ -35,6 +33,8 @@ import Control.Monad.Eff (kind Effect)
 import Data.Maybe        (Maybe(..))
 import Data.Nullable     (Nullable, toNullable)
 
+import Fetch             (Response, Request, RequestInfo)
+
 
 --------------------
 -- TYPES
@@ -48,11 +48,6 @@ foreign import data Cache :: Type
 
 foreign import data CacheStorage :: Type
 
-
-foreign import data Response :: Type
-
-
-type RequestInfo = String
 
 
 type CacheQueryOptions =
