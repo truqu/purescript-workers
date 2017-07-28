@@ -1,6 +1,6 @@
 {
   "name": "purescript-workers",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "A wrapper around the Web Workers API",
   "scripts": {
     "prepare:release": "mkdir -p releases/github && cp -r README.md LICENSE src bower.json releases/github",

@@ -1,5 +1,6 @@
 {
   "name": "purescript-workers",
+  "version": "2.0.0",
   "description": "An API wrapper around Web Workers",
   "license": "MIT",
   "homepage": "https://github.com/truqu/purescript-workers",
