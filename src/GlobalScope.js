@@ -37,12 +37,12 @@ exports._navigator = function _navigator(toNavigator) {
 };
 
 exports.close = function eff() {
-    close();
+    self.close();
 };
 
 exports.onError = function _onError(f) {
     return function eff() {
-        onerror = function onerror(msg) {
+        self.onerror = function onerror(msg) {
             f(new Error(msg))();
             // NOTE indicates that the error has been handled,
             // so it isn't propagated to the parent
@@ -53,7 +53,7 @@ exports.onError = function _onError(f) {
 
 exports.onLanguageChange = function _onLanguageChange(f) {
     return function eff() {
-        onlanguagechange = function onlanguagechange() {
+        self.onlanguagechange = function onlanguagechange() {
             f();
         };
     };
@@ -61,7 +61,7 @@ exports.onLanguageChange = function _onLanguageChange(f) {
 
 exports.onOffline = function _onOffline(f) {
     return function eff() {
-        onoffline = function onoffline() {
+        self.onoffline = function onoffline() {
             f();
         };
     };
@@ -69,7 +69,7 @@ exports.onOffline = function _onOffline(f) {
 
 exports.onOnline = function _onOnline(f) {
     return function eff() {
-        ononline = function ononline() {
+        self.ononline = function ononline() {
             f();
         };
     };
@@ -77,7 +77,7 @@ exports.onOnline = function _onOnline(f) {
 
 exports.onRejectionHandled = function _onRejectionHandled(f) {
     return function eff() {
-        onrejectionhandled = function onrejectionhandled() {
+        self.onrejectionhandled = function onrejectionhandled() {
             f();
         };
     };
@@ -85,7 +85,7 @@ exports.onRejectionHandled = function _onRejectionHandled(f) {
 
 exports.onUnhandledRejection = function _onUnhandledRejection(f) {
     return function eff() {
-        onrejectionunhandled = function onrejectionunhandled() {
+        self.onrejectionunhandled = function onrejectionunhandled() {
             f();
         };
     };

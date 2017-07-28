@@ -14,7 +14,7 @@ module MessagePort
 import Prelude
 
 import Control.Monad.Eff           (Eff)
-import Control.Monad.Eff.Exception (EXCEPTION, Error)
+import Control.Monad.Eff.Exception (Error)
 
 import Workers                     (WORKER)
 import Workers.Class               (class Channel)
