@@ -8,7 +8,7 @@ import Control.Monad.Eff.Exception (EXCEPTION, Error)
 import Data.Maybe                  (Maybe(..))
 import Data.Either                 (Either(..))
 import Data.Nullable               (Nullable, toNullable)
-import Network.HTTP                (Verb, Header(..), HeaderHead, string2Head, string2Verb)
+import Network.HTTP                (Verb, Header(..), HeaderHead, StatusCode, string2Head, string2Verb, number2Status, status2Number)
 import Data.String.Read            (class Read, read)
 import Data.Argonaut.Core          (Json)
 
@@ -35,8 +35,8 @@ class HasBody body where
   text :: body -> String
 
 
-class Clone a where
-  clone :: a -> a
+class Clone object where
+  clone :: forall e. object -> Eff (exception :: EXCEPTION | e) object
 
 
 type RequestInfo = String
@@ -119,6 +119,15 @@ data ReferrerPolicy
   | OriginWhenCrossOrigin
   | StrictOriginWhenCrossOrigin
   | UnsafeURL
+
+
+data ResponseType
+  = Basic
+  | CorsResponse
+  | DefaultResponse
+  | ErrorResponse
+  | Opaque
+  | OpaqueRedirect
 
 
 --------------------
@@ -241,6 +250,72 @@ requestType
 requestType =
   _requestType (read >>> toNullable)
 
+-- Response
+
+responseError
+  :: Response
+  -> Response
+responseError =
+  _responseError
+
+
+responseHeaders
+  :: Response
+  -> Array Header
+responseHeaders =
+  _responseHeaders string2Head Header
+
+
+responseOk
+  :: Response
+  -> Boolean
+responseOk =
+  _responseOk
+
+
+responseRedirect
+  :: Response
+  -> String
+  -> Maybe StatusCode
+  -> Response
+responseRedirect res url code =
+  _responseRedirect res url (toNullable (status2Number <$> code))
+
+
+responseRedirected
+  :: Response
+  -> Boolean
+responseRedirected =
+  _responseRedirected
+
+
+responseStatus
+  :: Response
+  -> StatusCode
+responseStatus =
+  _responseStatus (number2Status >>> toNullable)
+
+
+responseStatusCode
+  :: Response
+  -> Int
+responseStatusCode =
+  _responseStatusCode
+
+
+responseType
+  :: Response
+  -> ResponseType
+responseType =
+  _responseType (read >>> toNullable)
+
+
+responseURL
+  :: Response
+  -> String
+responseURL =
+  _responseURL
+
 
 --------------------
 -- INSTANCES
@@ -254,6 +329,32 @@ instance isRequestRequest :: IsRequest Request where
 instance isRequestString :: IsRequest String where
   toRequest =
     new
+
+
+instance hasBodyRequest :: HasBody Request where
+  text =
+    _text
+
+  json =
+    _json Left Right
+
+
+instance hasBodyResponse :: HasBody Response where
+  text =
+    _text
+
+  json =
+    _json Left Right
+
+
+instance cloneRequest :: Clone Request where
+  clone =
+    _clone
+
+
+instance cloneResponse :: Clone Response where
+  clone =
+    _clone
 
 
 instance showRequestType :: Show RequestType where
@@ -418,6 +519,29 @@ instance readReferrerPolicy :: Read ReferrerPolicy where
       _                                 -> Nothing
 
 
+instance showResponseType :: Show ResponseType where
+  show resType =
+    case resType of
+      Basic           -> "basic"
+      CorsResponse    -> "cors"
+      DefaultResponse -> "default"
+      ErrorResponse   -> "error"
+      Opaque          -> "opaque"
+      OpaqueRedirect  -> "opaqueredirect"
+
+
+instance readResponseType :: Read ResponseType where
+  read s =
+    case s of
+      "basic"          -> pure Basic
+      "cors"           -> pure CorsResponse
+      "default"        -> pure DefaultResponse
+      "error"          -> pure ErrorResponse
+      "opaque"         -> pure Opaque
+      "opaqueredirect" -> pure OpaqueRedirect
+      _                -> Nothing
+
+
 --------------------
 -- FFI
 --------------------
@@ -428,6 +552,29 @@ foreign import _fetch
   :: forall e req. (IsRequest req)
   => req
   -> Aff (fetch :: FETCH | e) Response
+
+-- Clone
+
+foreign import _clone
+  :: forall object e
+  .  object
+  -> Eff (exception :: EXCEPTION | e) object
+
+-- HasBody
+
+foreign import _text
+  :: forall body
+  .  body
+  -> String
+
+
+foreign import _json
+  :: forall body
+  .  (Error -> Either Error Json)
+  -> (Json  -> Either Error Json)
+  -> body
+  -> Either Error Json
+
 
 -- Request
 
@@ -515,3 +662,55 @@ foreign import _requestType
   :: (String -> Nullable RequestType)
   -> Request
   -> RequestType
+
+-- Response
+
+foreign import _responseError
+  :: Response
+  -> Response
+
+
+foreign import _responseHeaders
+  :: (String -> HeaderHead)
+  -> (HeaderHead -> String -> Header)
+  -> Response
+  -> Array Header
+
+
+foreign import _responseOk
+  :: Response
+  -> Boolean
+
+
+foreign import _responseRedirect
+  :: Response
+  -> String
+  -> Nullable Int
+  -> Response
+
+
+foreign import _responseRedirected
+  :: Response
+  -> Boolean
+
+
+foreign import _responseStatus
+  :: (Int -> Nullable StatusCode)
+  -> Response
+  -> StatusCode
+
+
+foreign import _responseStatusCode
+  :: Response
+  -> Int
+
+
+foreign import _responseType
+  :: (String -> Nullable ResponseType)
+  -> Response
+  -> ResponseType
+
+
+foreign import _responseURL
+  :: Response
+  -> String
