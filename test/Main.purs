@@ -36,7 +36,7 @@ launchAff' aff =
 
 -- main :: forall e. Eff (mocha :: MOCHA, avar :: AVAR, worker :: WORKER, exception :: EXCEPTION | e) Unit
 main = runMocha do
-  describe "[Dedicated Worker] Basic" do
+  describe "[Dedicated Worker]" do
     it "Hello World" do
       var <- makeVar
       (worker :: Dedicated) <- DedicatedWorker.new "base/worker01.js"
@@ -66,15 +66,6 @@ main = runMocha do
       DedicatedWorker.postMessage worker unit
       Navigator nav <- takeVar var
       nav.onLine `shouldEqual` true
-
-    it "Shared Worker Connect" do
-      var <- makeVar
-      (worker :: Shared) <- SharedWorker.new "base/worker04.js"
-      MessagePort.onMessage (SharedWorker.port worker) (\msg -> launchAff' do
-        putVar var msg
-      )
-      (msg :: Boolean) <- takeVar var
-      msg `shouldEqual` true
 
     it "Error Event - Handled by Worker" do
       var <- makeVar
@@ -114,6 +105,19 @@ main = runMocha do
       msg <- takeVar var
       msg `shouldEqual` unit
 
+
+  describe "[Shared Worker]" do
+    it "Shared Worker Connect" do
+      var <- makeVar
+      (worker :: Shared) <- SharedWorker.new "base/worker04.js"
+      MessagePort.onMessage (SharedWorker.port worker) (\msg -> launchAff' do
+        putVar var msg
+      )
+      (msg :: Boolean) <- takeVar var
+      msg `shouldEqual` true
+
+
+  describe "[Service Worker]" do
     it "Service Worker - using get with source id" do
       var <- makeVar
       registration <- ServiceWorker.register "base/worker08.js"
