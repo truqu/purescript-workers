@@ -1,6 +1,7 @@
 module GlobalScope.Service
   -- * Global Scope
-  ( clients
+  ( caches
+  , clients
   , registration
   , skipWaiting
   , onInstall
@@ -48,6 +49,7 @@ import Data.String.Read  (class Read, read)
 
 import Workers.Service   (WORKER, Registration)
 import Workers.Class     (class Channel)
+import Cache             (CacheStorage)
 
 
 --------------------
@@ -99,6 +101,13 @@ data VisibilityState
 --------------------
 
 -- Global Scope
+
+caches
+  :: forall e
+  .  Eff (worker :: WORKER | e) CacheStorage
+caches =
+  _caches
+
 
 clients
   :: forall e
@@ -321,6 +330,11 @@ instance readVisibilityState :: Read VisibilityState where
 --------------------
 
 -- Global Scope
+
+foreign import _caches
+  :: forall e
+  .  Eff (worker :: WORKER | e) CacheStorage
+
 
 foreign import _clients
   :: forall e

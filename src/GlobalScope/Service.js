@@ -1,5 +1,9 @@
 /* Global Scope */
 
+exports._caches = function eff() {
+    return self.caches;
+};
+
 exports._clients = function eff() {
     return self.clients;
 };
