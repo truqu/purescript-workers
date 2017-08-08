@@ -9,9 +9,11 @@
     "globals": {
         "Worker": true,
         "SharedWorker": true,
+        "Request": true,
         "self": true,
         "location": true,
         "navigator": true,
+        "fetch": true,
     },
     "rules": {
         "import/no-extraneous-dependencies": 0,

@@ -33,7 +33,7 @@ import Control.Monad.Eff (kind Effect)
 import Data.Maybe        (Maybe(..))
 import Data.Nullable     (Nullable, toNullable)
 
-import Fetch             (Response, Request, RequestInfo)
+import Fetch             (Response, RequestInfo)
 
 
 --------------------

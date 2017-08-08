@@ -1,16 +1,64 @@
-module Fetch where
+module Fetch
+  -- * Effects & Classes
+  ( FETCH
+  , class IsRequest, toRequest
+  , class HasBody, text, json
+  , class Clone, clone
+
+  -- * Fetch
+  , fetch
+
+  -- * Request
+  , Request
+  , RequestInfo
+  , RequestInit
+  , Credentials
+  , Destination
+  , Mode
+  , Redirect
+  , ReferrerPolicy
+  , RequestCache
+  , RequestType
+  , new
+  , new'
+  , requestCache
+  , requestCredentials
+  , requestDestination
+  , requestHeaders
+  , requestIntegrity
+  , requestKeepAlive
+  , requestMethod
+  , requestMode
+  , requestRedirect
+  , requestReferrer
+  , requestReferrerPolicy
+  , requestURL
+  , requestType
+
+  -- * Response
+  , Response
+  , ResponseType
+  , responseError
+  , responseHeaders
+  , responseOk
+  , responseRedirect
+  , responseRedirected
+  , responseStatus
+  , responseStatusCode
+  , responseType
+  , responseURL
+  ) where
 
 import Prelude
 
 import Control.Monad.Aff           (Aff)
 import Control.Monad.Eff           (kind Effect, Eff)
-import Control.Monad.Eff.Exception (EXCEPTION, Error)
-import Data.Maybe                  (Maybe(..))
-import Data.Either                 (Either(..))
-import Data.Nullable               (Nullable, toNullable)
-import Network.HTTP                (Verb, Header(..), HeaderHead, StatusCode, string2Head, string2Verb, number2Status, status2Number)
-import Data.String.Read            (class Read, read)
+import Control.Monad.Eff.Exception (EXCEPTION)
 import Data.Argonaut.Core          (Json)
+import Data.Maybe                  (Maybe(..))
+import Data.Nullable               (Nullable, toNullable)
+import Data.String.Read            (class Read, read)
+import Network.HTTP                (Verb, Header(..), HeaderHead, StatusCode, string2Head, string2Verb, number2Status, status2Number)
 
 
 --------------------
@@ -31,8 +79,8 @@ class IsRequest req where
 
 
 class HasBody body where
-  json :: body -> Either Error Json
-  text :: body -> String
+  json :: forall e. body -> Aff (fetch :: FETCH | e) Json
+  text :: forall e. body -> Aff (fetch :: FETCH | e) String
 
 
 class Clone object where
@@ -158,7 +206,7 @@ new'
   -> RequestInit
   -> Eff (exception :: EXCEPTION) Request
 new' url opts =
-  _new' url opts
+  _newPrime url opts
 
 
 requestCache
@@ -336,7 +384,7 @@ instance hasBodyRequest :: HasBody Request where
     _text
 
   json =
-    _json Left Right
+    _json
 
 
 instance hasBodyResponse :: HasBody Response where
@@ -344,7 +392,7 @@ instance hasBodyResponse :: HasBody Response where
     _text
 
   json =
-    _json Left Right
+    _json
 
 
 instance cloneRequest :: Clone Request where
@@ -563,17 +611,15 @@ foreign import _clone
 -- HasBody
 
 foreign import _text
-  :: forall body
+  :: forall e body
   .  body
-  -> String
+  -> Aff (fetch :: FETCH | e) String
 
 
 foreign import _json
-  :: forall body
-  .  (Error -> Either Error Json)
-  -> (Json  -> Either Error Json)
-  -> body
-  -> Either Error Json
+  :: forall e body
+  .  body
+  -> Aff (fetch :: FETCH | e) Json
 
 
 -- Request
@@ -583,7 +629,7 @@ foreign import _new
   -> Request
 
 
-foreign import _new'
+foreign import _newPrime
   :: forall e
   .  String
   -> RequestInit
