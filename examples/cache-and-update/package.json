@@ -1,0 +1,25 @@
+{
+  "name": "purescript-workers",
+  "version": "1.0.0",
+  "description": "Example of https://serviceworke.rs/strategy-cache-and-update_service-worker_doc.html using the purescript-workers API",
+  "scripts": {
+    "build": "pulp browserify -j 4 -O  -I service --to ../serviceworker-cookbook/strategy-cache-and-update/service-worker.js",
+    "install": "bower install && ln -s ../../../ bower_components/purescript-workers"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "bower": "1.8.0",
+    "pulp": "11.0.0",
+    "purescript": "0.11.5"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Truqu/purescript-workers.git"
+  },
+  "author": "Truqu <matthias.benkort@truqu.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Truqu/purescript-workers/issues"
+  },
+  "homepage": "https://github.com/Truqu/purescript-workers/examples/cache-and-update"
+}

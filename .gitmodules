@@ -1,0 +1,3 @@
+[submodule "examples/serviceworker-cookbook"]
+	path = examples/serviceworker-cookbook
+	url = https://github.com/mozilla/serviceworker-cookbook

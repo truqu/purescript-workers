@@ -1,0 +1,26 @@
+{
+  "name": "purescript-example-cache-and-update",
+  "version": "1.0.0",
+  "description": "Example of https://serviceworke.rs/strategy-cache-and-update_service-worker_doc.html using the purescript-workers API",
+  "license": "MIT",
+  "homepage": "https://github.com/truqu/purescript-workers/examples/cache-and-update",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/truqu/purescript-workers.git"
+  },
+  "dependencies": {
+    "purescript-aff": "^3.1.0",
+    "purescript-eff": "^3.1.0",
+    "purescript-exceptions": "^3.0.0",
+    "purescript-generics": "^4.0.0",
+    "purescript-nonempty": "^4.0.0",
+    "purescript-prelude": "^3.1.0",
+    "purescript-read": "^1.0.0",
+    "purescript-http": "^3.0.0",
+    "purescript-argonaut": "^3.0.0",
+    "purescript-nullable": "^3.0.0"
+  },
+  "devDependencies": {
+    "purescript-psci-support": "^3.0.0"
+  }
+}
