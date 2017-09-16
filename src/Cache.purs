@@ -31,7 +31,7 @@ import Prelude
 import Control.Monad.Aff (Aff)
 import Control.Monad.Eff (kind Effect)
 import Data.Maybe        (Maybe(..))
-import Data.Nullable     (Nullable, toNullable)
+import Data.Nullable     (Nullable, toNullable, toMaybe)
 
 import Fetch             (Response, RequestInfo)
 
@@ -166,9 +166,9 @@ match
   :: forall e
   .  Cache
   -> RequestInfo
-  -> Aff (cache :: CACHE | e) Response
+  -> Aff (cache :: CACHE | e) (Maybe Response)
 match cache req =
-  _match cache req defaultCacheQueryOptions
+  toMaybe <$> _match cache req defaultCacheQueryOptions
 
 
 match'
@@ -176,9 +176,9 @@ match'
   .  Cache
   -> RequestInfo
   -> CacheQueryOptions
-  -> Aff (cache :: CACHE | e) Response
-match' =
-  _match
+  -> Aff (cache :: CACHE | e) (Maybe Response)
+match' cache req opts =
+  toMaybe <$>_match cache req opts
 
 
 matchAll
@@ -279,7 +279,7 @@ foreign import _match
   .  Cache
   -> String
   -> CacheQueryOptions
-  -> Aff (cache :: CACHE | e) Response
+  -> Aff (cache :: CACHE | e) (Nullable Response)
 
 
 foreign import _matchAll
