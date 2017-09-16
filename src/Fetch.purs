@@ -189,7 +189,7 @@ fetch
   => req
   -> Aff (fetch :: FETCH | e) Response
 fetch =
-  _fetch
+  toRequest >>> _fetch
 
 
 -- Request
@@ -597,8 +597,8 @@ instance readResponseType :: Read ResponseType where
 -- Fetch
 
 foreign import _fetch
-  :: forall e req. (IsRequest req)
-  => req
+  :: forall e
+  .  Request
   -> Aff (fetch :: FETCH | e) Response
 
 -- Clone
