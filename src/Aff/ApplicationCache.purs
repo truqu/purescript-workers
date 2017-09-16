@@ -8,9 +8,7 @@ module Aff.ApplicationCache
 import Prelude
 
 import Control.Monad.Aff           (Aff)
-import Control.Monad.Eff           (Eff)
 import Control.Monad.Eff.Class     (liftEff)
-import Control.Monad.Eff.Exception (Error)
 
 import ApplicationCache             as A
 import ApplicationCache            (APPCACHE, ApplicationCache, Status(..), status)
