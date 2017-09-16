@@ -5,9 +5,6 @@
   "scripts": {
     "prepare:release": "mkdir -p releases/github && cp -r README.md LICENSE src bower.json releases/github",
 
-    "test:run:browserstack": "karma start karma.browserstack.conf.js",
-    "test:run": "karma start karma.conf.js",
-
     "test:build:wrk09": "pulp browserify -j 4 --main \"Test.Workers.Worker09\" -I test --to dist/karma/worker09.js",
     "test:build:wrk08": "pulp browserify -j 4 --main \"Test.Workers.Worker08\" -I test --to dist/karma/worker08.js   && npm run test:build:wrk09",
     "test:build:wrk07": "pulp browserify -j 4 --main \"Test.Workers.Worker07\" -I test --to dist/karma/worker07.js   && npm run test:build:wrk08",
@@ -19,8 +16,12 @@
     "test:build:wrk01": "pulp browserify -j 4 --main \"Test.Workers.Worker01\" -I test --to dist/karma/worker01.js   && npm run test:build:wrk02",
     "test:build": "mkdir -p dist/karma && pulp browserify -j 4 --main \"Test.Main\" -I test --to dist/karma/index.js && npm run test:build:wrk01",
 
+    "test:run:browserstack": "karma start karma.browserstack.conf.js",
+    "test:run": "karma start karma.conf.js",
+
     "test:browserstack": "npm run test:build && npm run test:run:browserstack",
     "test": "npm run test:build && npm run test:run",
+
     "start": "find . -type f -regex '.*\\(src\\|test\\).*' ! -regex '.*bower_components.*\\|.*node_modules.*|.*\\.sw.*' | entr -s 'npm run test -s'"
   },
   "dependencies": {},
