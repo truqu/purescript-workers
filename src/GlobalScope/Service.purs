@@ -148,11 +148,12 @@ onActivate =
 
 
 onFetch
-  :: forall e e'
+  :: forall e e' e''
   .  (Request -> Aff ( | e') (Maybe Response))
+  -> (Request -> Aff ( | e'') Unit)
   -> Eff (worker :: WORKER | e) Unit
-onFetch =
-  _onFetch toNullable
+onFetch f =
+  _onFetch toNullable f
 
 
 onMessage
@@ -365,9 +366,10 @@ foreign import _onActivate
 
 
 foreign import _onFetch
-  :: forall a e e'
+  :: forall a e e' e''
   .  (Maybe a -> Nullable a)
   -> (Request -> Aff ( | e') (Maybe Response))
+  -> (Request -> Aff ( | e'') Unit)
   -> Eff (worker :: WORKER | e) Unit
 
 

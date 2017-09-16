@@ -45,24 +45,34 @@ exports._onActivate = function _onActivate(f) {
 };
 
 exports._onFetch = function _onFetch(toNullable) {
-    return function _onFetch2(f) {
-        return function eff() {
-            self.onfetch = function onfetch(e) {
-                e.respondWith(new Promise(function respondWith(resolve, reject) {
-                    try {
-                        f(e.request)(function onSuccess(mres) {
-                            var mres_ = toNullable(mres);
-                            if (mres_ != null) {
-                                resolve(mres_);
-                                return;
-                            }
+    return function _onFetch2(respondWith) {
+        return function _onFetch3(waitUntil) {
+            return function eff() {
+                self.onfetch = function onfetch(e) {
+                    e.respondWith(new Promise(function respondWithCb(resolve, reject) {
+                        try {
+                            respondWith(e.request)(function onSuccess(mres) {
+                                var mres_ = toNullable(mres);
+                                if (mres_ != null) {
+                                    resolve(mres_);
+                                    return;
+                                }
 
-                            self.fetch(e.request).then(resolve, reject);
-                        }, reject);
-                    } catch (err) {
-                        reject(err);
-                    }
-                }));
+                                self.fetch(e.request).then(resolve, reject);
+                            }, reject);
+                        } catch (err) {
+                            reject(err);
+                        }
+                    }));
+
+                    e.waitUntil(new Promise(function waitUntilCb(resolve, reject) {
+                        try {
+                            waitUntil(e.request)(resolve, reject);
+                        } catch (err) {
+                            reject(err);
+                        }
+                    }));
+                };
             };
         };
     };
